@@ -1,35 +1,63 @@
-/// Base exception for all custom exceptions
-abstract class ErrorException implements Exception {
-  final String message;
-  final int? code;
+import 'dart:io';
 
-  const ErrorException({required this.message, this.code});
+import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  @override
-  String toString() => 'ErrorException(message: $message, code: $code)';
+part 'error_exception.freezed.dart';
+
+@freezed
+abstract class ErrorException with _$ErrorException implements Exception {
+  const factory ErrorException.server({required String message, int? code}) =
+      ServerException;
+
+  const factory ErrorException.timeout({required String message}) =
+      TimeoutException;
+
+  const factory ErrorException.network({required String message}) =
+      NetworkException;
+
+  const factory ErrorException.cache({required String message}) =
+      CacheException;
+
+  const factory ErrorException.conflict({required String message}) =
+      ConflictException;
 }
 
-/// Thrown when server returns non-2xx
-class ServerException extends ErrorException {
-  const ServerException({required super.message, super.code});
-}
+class RemoteExceptionMapper {
+  static ErrorException map(Object error) {
+    if (error is DioException) {
+      return _mapDio(error);
+    }
 
-/// Thrown when request times out
-class TimeoutException extends ErrorException {
-  const TimeoutException({required super.message}) : super(code: -1);
-}
+    if (error is SocketException) {
+      return const ErrorException.network(message: 'No internet connection');
+    }
 
-/// Thrown when device has no connection
-class NetworkException extends ErrorException {
-  const NetworkException({required super.message}) : super(code: -2);
-}
+    return const ErrorException.server(message: 'Unexpected error occurred');
+  }
 
-/// Thrown when local storage fails
-class CacheException extends ErrorException {
-  const CacheException({required super.message}) : super(code: -3);
-}
+  static ErrorException _mapDio(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.sendTimeout) {
+      return const ErrorException.timeout(message: 'Request timeout');
+    }
 
-/// Thrown when backend returns HTTP 409
-class ConflictException extends ErrorException {
-  const ConflictException({required super.message}) : super(code: 409);
+    if (e.type == DioExceptionType.connectionError) {
+      return const ErrorException.network(message: 'No internet connection');
+    }
+
+    final statusCode = e.response?.statusCode ?? 0;
+
+    if (statusCode == 409) {
+      return ErrorException.conflict(
+        message: e.response?.data?['message'] ?? 'Conflict occurred',
+      );
+    }
+
+    return ErrorException.server(
+      message: e.response?.data?['message'] ?? 'Server error',
+      code: statusCode,
+    );
+  }
 }
