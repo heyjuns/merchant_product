@@ -13,7 +13,7 @@ abstract class ProductRouter {
       path: ProductRoutes.products.path,
       name: ProductRoutes.products.name,
       builder: (_, state) => BlocProvider(
-        create: (_) => sl<ProductBloc>(),
+        create: (_) => sl<ProductsBloc>(),
         child: ProductsScreen(),
       ),
     ),

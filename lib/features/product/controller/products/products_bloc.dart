@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:merchant_product/core/core.dart';
-// import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:merchant_product/features/product/product.dart';
 part 'products_event.dart';
 part 'products_state.dart';
@@ -12,14 +12,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   ProductsBloc({required this.getProductsUseCase})
     : super(const ProductsState.initial()) {
-    on<_Fetch>(
-      _onFetch,
-      //  transformer: restartable(),
-    );
-    on<_LoadMore>(
-      _onLoadMore,
-      //  transformer: droppable(),
-    );
+    on<_Fetch>(_onFetch, transformer: restartable());
+    on<_LoadMore>(_onLoadMore, transformer: droppable());
   }
 
   final List<ProductEntity> _products = [];
@@ -38,10 +32,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     await _fetchPage(emit, isRefresh: true);
   }
 
-  Future<void> _onLoadMore(
-    _LoadMore event,
-    Emitter<ProductsState> emit,
-  ) async {
+  Future<void> _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) async {
     final currentState = state;
 
     if (currentState is! _Loaded || currentState.hasReachedMax) {

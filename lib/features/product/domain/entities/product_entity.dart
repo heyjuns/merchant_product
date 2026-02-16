@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 part 'product_entity.freezed.dart';
 part 'product_entity.g.dart';
@@ -19,9 +20,9 @@ abstract class ProductEntity with _$ProductEntity {
       _$ProductEntityFromJson(json);
 
   factory ProductEntity.init() => ProductEntity(
-    description: '',
+    description: BoneMock.subtitle,
     id: 0,
-    name: '',
+    name: BoneMock.subtitle,
     price: 0,
     status: ProductStatus.unknown,
     updatedAt: DateTime.now(),
