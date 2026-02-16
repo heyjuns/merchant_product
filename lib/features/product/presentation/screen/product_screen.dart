@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
@@ -16,20 +17,19 @@ class ProductScreen extends HookWidget {
       return null;
     }, []);
 
-    useBlocListener(productBloc, (bloc, current, context) {
-      current.whenOrNull(
-        initial: () =>
-            showFToast(context: context, title: const Text('Initial')),
-        loaded: (product) =>
-            showFToast(context: context, title: Text(product.name)),
-        failed: (error) =>
-            showFToast(context: context, title: Text(error.message)),
-      );
-    });
-
     return FScaffold(
-      header: FHeader(title: Text('Product ${id}')),
-      child: SizedBox(),
+      header: FHeader(title: Text('Product $id')),
+      child: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          return state.maybeWhen(
+            loading: (product) => Center(child: CircularProgressIndicator()),
+            loaded: (product) => Center(child: Text(product.name)),
+            failed: (error) => Center(child: Text(error.message)),
+            initial: () => SizedBox(),
+            orElse: () => SizedBox(),
+          );
+        },
+      ),
     );
   }
 }

@@ -42,3 +42,23 @@ class CacheFailure extends Failure {
 class ConflictFailure extends Failure {
   const ConflictFailure({required super.message}) : super(code: 409);
 }
+
+class TimeoutFailure extends Failure {
+  const TimeoutFailure({required super.message}) : super(code: -1);
+}
+
+extension ErrorExceptionMapper on ErrorException {
+  Failure toFailure() {
+    return when(
+      server: (message, code) => ServerFailure(message: message, code: code),
+
+      network: (message) => NetworkFailure(message: message),
+
+      cache: (message) => CacheFailure(message: message),
+
+      conflict: (message) => ConflictFailure(message: message),
+
+      timeout: (message) => TimeoutFailure(message: message),
+    );
+  }
+}

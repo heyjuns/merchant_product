@@ -45,6 +45,7 @@ dependencies:
   flutter_hooks: ^0.21.3+1
   hooked_bloc: ^1.7.0
   get_it: ^9.2.0
+  talker_dio_logger: ^5.1.13
 
 dev_dependencies:
   flutter_test:
