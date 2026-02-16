@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:merchant_product/setup_app.dart';
 
-void main() {
+import 'app_router.dart';
+
+Future<void> main() async {
+  await setupApp();
   runApp(const Application());
 }
 
@@ -16,16 +20,15 @@ class Application extends StatelessWidget {
     /// ```shell
     /// dart forui theme create [theme template].
     /// ```
-    final theme = FThemes.neutral.dark;
+    final theme = FThemes.neutral.light;
 
-    return MaterialApp(
+    return MaterialApp.router(
       theme: theme.toApproximateMaterialTheme(),
       builder: (_, child) => FTheme(
         data: theme,
         child: FToaster(child: FTooltipGroup(child: child!)),
       ),
-      // You can also replace FScaffold with Material Scaffold.
-      home: const FScaffold(child: Example()),
+      routerConfig: router,
     );
   }
 }
