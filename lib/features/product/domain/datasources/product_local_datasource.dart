@@ -1,10 +1,12 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:merchant_product/core/params.dart';
 
 import '../../product.dart';
 
 abstract class ProductLocalDatasource {
-  Future<List<ProductModel>> getProducts();
+  Future<List<ProductModel>> getProducts(Params params);
+  Stream<List<ProductModel>> watchProducts(Params params);
   Future<ProductModel?> getProductById(int id);
-  Future<Unit> addOrUpdateProduct(ProductModel product, {bool synced});
+  Future<Unit> addOrUpdateProduct(ProductModel product);
   Future<List<ProductModel>> getPendingProducts();
 }

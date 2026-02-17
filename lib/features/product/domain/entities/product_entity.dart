@@ -8,7 +8,7 @@ part 'product_entity.g.dart';
 abstract class ProductEntity with _$ProductEntity {
   ProductEntity._();
   factory ProductEntity({
-    required int id,
+    int? id,
     required String name,
     required int price,
     required String description,

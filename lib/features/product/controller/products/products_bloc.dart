@@ -9,26 +9,42 @@ part 'products_bloc.freezed.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final GetProductsUsecase getProductsUseCase;
+  final StreamProductsUsecase streamProductsUsecase;
 
-  ProductsBloc({required this.getProductsUseCase})
-    : super(const ProductsState.initial()) {
+  ProductsBloc({
+    required this.getProductsUseCase,
+    required this.streamProductsUsecase,
+  }) : super(const ProductsState.initial()) {
     on<_Fetch>(_onFetch, transformer: restartable());
     on<_LoadMore>(_onLoadMore, transformer: droppable());
   }
 
-  final List<ProductEntity> dummies = List.generate(
-    10,
-    (index) => ProductEntity.init(),
-  );
-
-  final List<ProductEntity> _products = [];
   ProductsDto _paginationDto = ProductsDto.init();
 
   Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
-    _products.clear();
     _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
-    emit(ProductsState.loading(products: dummies));
-    await _fetchPage(emit, isRefresh: true);
+
+    emit(
+      ProductsState.loading(
+        products: List.generate(10, (_) => ProductEntity.init()),
+      ),
+    );
+
+    // 1️⃣ Start listening to DB
+    await emit.forEach(
+      streamProductsUsecase(Params(queryParameters: _paginationDto.toJson())),
+      onData: (products) {
+        final hasReachedMax = products.length < _paginationDto.limit;
+
+        return ProductsState.loaded(
+          products: products,
+          hasReachedMax: hasReachedMax,
+        );
+      },
+    );
+
+    // 2️⃣ Trigger remote refresh
+    await getProductsUseCase(Params(queryParameters: _paginationDto.toJson()));
   }
 
   Future<void> _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) async {
@@ -38,39 +54,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       return;
     }
 
-    await _fetchPage(emit);
-  }
+    _paginationDto = _paginationDto.copyWith(page: _paginationDto.page + 1);
 
-  Future<void> _fetchPage(
-    Emitter<ProductsState> emit, {
-    bool isRefresh = false,
-  }) async {
-    final result = await getProductsUseCase.call(
-      Params(queryParameters: _paginationDto.toJson()),
-    );
-
-    result.fold(
-      (failure) {
-        emit(ProductsState.failed(error: failure));
-      },
-      (List<ProductEntity> data) {
-        _products.addAll(data);
-
-        final hasReachedMax = _paginationDto.limit > data.length;
-
-        if (!hasReachedMax) {
-          _paginationDto = _paginationDto.copyWith(
-            page: _paginationDto.page + 1,
-          );
-        }
-
-        emit(
-          ProductsState.loaded(
-            products: List.unmodifiable(_products),
-            hasReachedMax: hasReachedMax,
-          ),
-        );
-      },
-    );
+    // Just trigger refresh for next page
+    await getProductsUseCase(Params(queryParameters: _paginationDto.toJson()));
   }
 }

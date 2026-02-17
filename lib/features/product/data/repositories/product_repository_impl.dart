@@ -1,101 +1,154 @@
 import 'package:fpdart/fpdart.dart';
+
 import '../../../../core/core.dart';
 import '../../domain/domain.dart';
-import '../data.dart';
+import '../models/product_model.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
-  final ProductRemoteDatasource remoteDatasource;
-  final ProductLocalDatasource localDatasource;
+  final ProductRemoteDatasource remote;
+  final ProductLocalDatasource local;
 
-  ProductRepositoryImpl({
-    required this.remoteDatasource,
-    required this.localDatasource,
-  });
+  ProductRepositoryImpl({required this.remote, required this.local});
 
-  // --- Get single product ---
   @override
   BaseResponse<ProductEntity> getProduct(Params params) async {
     try {
-      // 1️⃣ Try fetching from local first
-      final id = int.parse(params.endPoint!);
-      final localModel = await localDatasource.getProductById(id);
+      final serverId = params.endPoint;
 
-      if (localModel != null) {
-        // Return local data instantly
-        return right(localModel.toEntity());
+      if (serverId == null) {
+        return left(CacheFailure(message: 'Missing id'));
       }
 
-      // 2️⃣ Fallback to remote if local empty
-      final remoteModel = await remoteDatasource.getProduct(params);
+      final model = await local.getProductById(serverId as int);
 
-      // 3️⃣ Save remote product locally for offline use
-      await localDatasource.addOrUpdateProduct(remoteModel, synced: true);
+      if (model == null) {
+        return left(CacheFailure(message: 'Product not found'));
+      }
 
-      return right(remoteModel.toEntity());
+      return right(model.toEntity());
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
   }
 
-  // --- Get list of products ---
   @override
-  BaseResponse<List<ProductEntity>> getProducts(Params params) async {
+  BaseResponse<Unit> getProducts(Params params) async {
     try {
-      // 1️⃣ Try local first
-      final localModels = await localDatasource.getProducts();
-      if (localModels.isNotEmpty) {
-        return right(localModels.map((m) => m.toEntity()).toList());
+      final response = await remote.getProducts(params);
+
+      final remoteList = response; // assume List<ProductDto>
+
+      for (final dto in remoteList) {
+        final model = dto.copyWith(synced: true);
+
+        await local.addOrUpdateProduct(model);
       }
 
-      // 2️⃣ Fetch from remote if local empty
-      final remoteModels = await remoteDatasource.getProducts(params);
-
-      // 3️⃣ Cache remote products locally
-      for (var product in remoteModels) {
-        await localDatasource.addOrUpdateProduct(product, synced: true);
-      }
-
-      return right(remoteModels.map((m) => m.toEntity()).toList());
+      return right(unit);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
   }
 
-  // --- Create product (offline-first) ---
   @override
   BaseResponse<Unit> createProduct(Params params) async {
     try {
-      // Convert params.body → ProductModel
-      final model = ProductModel.fromJson(params.body!);
+      final dto = CreateProductDto.fromJson(params.body!);
 
-      // 1️⃣ Save locally first
-      await localDatasource.addOrUpdateProduct(model, synced: false);
+      final model = ProductModel(
+        localId: null,
+        serverId: null,
+        name: dto.name,
+        price: dto.price,
+        description: dto.description,
+        status: dto.status,
+        updatedAt: DateTime.now(),
+        synced: false,
+      );
 
-      // 2️⃣ Return immediately, sync to remote later
+      await local.addOrUpdateProduct(model);
+
       return right(unit);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
   }
 
-  // --- Update product (offline-first) ---
   @override
   BaseResponse<Unit> updateProduct(Params params) async {
     try {
-      final model = ProductModel.fromJson(params.body!);
+      final dto = CreateProductDto.fromJson(params.body!);
 
-      // 1️⃣ Update locally first
-      await localDatasource.addOrUpdateProduct(model, synced: false);
+      final existing = await local.getProductById(params.endPoint! as int);
 
-      // 2️⃣ Return immediately, sync to remote later
+      if (existing == null) {
+        return left(CacheFailure(message: 'Product not found'));
+      }
+
+      final updated = existing.copyWith(
+        name: dto.name,
+        price: dto.price,
+        description: dto.description,
+        status: dto.status,
+        updatedAt: DateTime.now(),
+        synced: false,
+      );
+
+      await local.addOrUpdateProduct(updated);
+
       return right(unit);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
   }
 
-  // Optional: fetch pending products for syncing
-  Future<List<ProductModel>> getPendingProducts() async {
-    return localDatasource.getPendingProducts();
+  @override
+  BaseResponse<Unit> syncProducts(Unit unit) async {
+    try {
+      final pending = await local.getPendingProducts();
+
+      for (final product in pending) {
+        if (product.serverId == null) {
+          // CREATE REMOTE
+          final response = await remote.createProduct(
+            Params(body: product.toCreateProductDto().toJson()),
+          );
+
+          final synced = product.copyWith(
+            serverId: response.serverId,
+            synced: true,
+          );
+
+          await local.addOrUpdateProduct(synced);
+        } else {
+          // UPDATE REMOTE
+          final response = await remote.updateProduct(
+            Params(
+              endPoint: product.serverId!.toString(),
+              body: product.toCreateProductDto().toJson(),
+            ),
+          );
+
+          final synced = product.copyWith(
+            serverId: response.serverId,
+            synced: true,
+            updatedAt: response.updatedAt,
+          );
+
+          await local.addOrUpdateProduct(synced);
+        }
+      }
+
+      return right(unit);
+    } on ErrorException catch (e) {
+      return left(e.toFailure());
+    }
+  }
+
+  @override
+  Stream<List<ProductEntity>> streamProducts(Params params) {
+    return local
+        .watchProducts(params)
+        .map((models) => models.map((e) => e.toEntity()).toList());
   }
 }

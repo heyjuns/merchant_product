@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:merchant_product/core/params.dart';
 
 import '../../product.dart';
 import '../services/products_database.dart';
@@ -7,44 +8,72 @@ import '../services/products_database.dart';
 class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
     implements ProductLocalDatasource {
   final ProductsDatabase db;
+
   ProductLocalDatasourceImpl(this.db) : super(db);
 
-  @override
-  Future<List<ProductModel>> getProducts() async {
-    final response = await select(db.productsTable).get();
-    return response.map((item) => ProductModel.fromDbRow(item)).toList();
-  }
+  // ==========================================================
+  // GET ALL (non-stream)
+  // ==========================================================
 
   @override
-  Future<Unit> addOrUpdateProduct(
-    ProductModel product, {
-    bool synced = false,
-  }) async {
-    await into(
+  Future<List<ProductModel>> getProducts(Params params) async {
+    final productsDto = ProductsDto.fromJson(params.queryParameters!);
+    final offset = (productsDto.page - 1) * productsDto.limit;
+
+    final rows =
+        await (select(db.productsTable)
+              ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+              ..limit(productsDto.limit, offset: offset))
+            .get();
+
+    return rows.map(ProductModel.fromDb).toList();
+  }
+
+  // ==========================================================
+  // WATCH ALL (Reactive)
+  // ==========================================================
+  @override
+  Stream<List<ProductModel>> watchProducts(Params params) {
+    final productsDto = ProductsDto.fromJson(params.queryParameters!);
+    final offset = (productsDto.page - 1) * productsDto.limit;
+
+    return (select(db.productsTable)
+          ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+          ..limit(productsDto.limit, offset: offset))
+        .watch()
+        .map((rows) => rows.map(ProductModel.fromDb).toList());
+  }
+
+  // ==========================================================
+  // FIND BY SERVER ID
+  // ==========================================================
+  @override
+  Future<ProductModel?> getProductById(int serverId) async {
+    final row = await (select(
       db.productsTable,
-    ).insertOnConflictUpdate(product.toCompanion(synced: synced));
+    )..where((tbl) => tbl.serverId.equals(serverId))).getSingleOrNull();
+
+    return row == null ? null : ProductModel.fromDb(row);
+  }
+
+  // ==========================================================
+  // INSERT OR UPDATE
+  // ==========================================================
+  @override
+  Future<Unit> addOrUpdateProduct(ProductModel model) async {
+    await into(db.productsTable).insertOnConflictUpdate(model.toCompanion());
     return unit;
   }
 
+  // ==========================================================
+  // GET PENDING SYNC
+  // ==========================================================
   @override
   Future<List<ProductModel>> getPendingProducts() async {
     final rows = await (select(
       db.productsTable,
-    )..where((t) => t.synced.equals(false))).get();
+    )..where((tbl) => tbl.synced.equals(false))).get();
 
-    return rows.map((row) => ProductModel.fromDbRow(row)).toList();
-  }
-
-  @override
-  Future<ProductModel> getProductById(int id) async {
-    final row = await (select(
-      db.productsTable,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
-
-    if (row == null) {
-      throw Exception("Product with id $id not found");
-    }
-
-    return ProductModel.fromDbRow(row);
+    return rows.map(ProductModel.fromDb).toList();
   }
 }

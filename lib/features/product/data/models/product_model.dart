@@ -9,52 +9,91 @@ part 'product_model.g.dart';
 
 @freezed
 abstract class ProductModel with _$ProductModel {
-  ProductModel._();
-  factory ProductModel({
-    required int id,
+  const ProductModel._();
+
+  const factory ProductModel({
+    int? localId,
+    @JsonKey(name: 'id') int? serverId,
+
     required String name,
     required int price,
     required String description,
     required String status,
-    required String updatedAt,
+    required DateTime updatedAt,
+
+    @Default(true) bool synced,
+    DateTime? lastSyncedAt,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 
-  ProductEntity toEntity() => ProductEntity(
-    id: id,
-    name: name,
-    price: price,
-    description: description,
-    status: switch (status) {
-      'draft' => ProductStatus.draft,
-      'active' => ProductStatus.active,
-      _ => ProductStatus.unknown,
-    },
-    updatedAt: DateTime.parse(updatedAt),
-  );
-
-  factory ProductModel.fromDbRow(ProductsTableData row) {
+  factory ProductModel.fromDb(ProductsTableData row) {
     return ProductModel(
-      id: row.id,
+      localId: row.localId,
+      serverId: row.serverId,
       name: row.name,
       price: row.price,
       description: row.description,
       status: row.status,
-      updatedAt: row.updatedAt.toIso8601String(),
+      updatedAt: row.updatedAt,
+      synced: row.synced,
+      lastSyncedAt: row.lastSyncedAt,
     );
   }
 
-  ProductsTableCompanion toCompanion({bool synced = false}) {
+  ProductsTableCompanion toCompanion() {
     return ProductsTableCompanion(
-      id: Value(id),
+      localId: localId == null ? const Value.absent() : Value(localId!),
+      serverId: Value(serverId),
       name: Value(name),
       price: Value(price),
       description: Value(description),
       status: Value(status),
-      updatedAt: Value(DateTime.parse(updatedAt)),
+      updatedAt: Value(updatedAt),
       synced: Value(synced),
+      lastSyncedAt: Value(lastSyncedAt),
+    );
+  }
+
+  ProductEntity toEntity() {
+    return ProductEntity(
+      id: serverId,
+      name: name,
+      price: price,
+      description: description,
+      status: switch (status) {
+        'draft' => ProductStatus.draft,
+        'active' => ProductStatus.active,
+        _ => ProductStatus.unknown,
+      },
+      updatedAt: updatedAt,
+    );
+  }
+
+  factory ProductModel.fromEntity(
+    ProductEntity entity, {
+    bool synced = false,
+    bool deleted = false,
+  }) {
+    return ProductModel(
+      serverId: entity.id,
+      name: entity.name,
+      price: entity.price,
+      description: entity.description,
+      status: entity.status.name,
+      updatedAt: entity.updatedAt,
+      synced: synced,
+    );
+  }
+
+  CreateProductDto toCreateProductDto() {
+    return CreateProductDto(
+      name: name,
+      price: price,
+      status: status,
+      description: description,
+      updatedAt: DateTime.now().toIso8601String(),
     );
   }
 }

@@ -11,15 +11,15 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   ProductRemoteDatasourceImpl(this.dio);
 
   @override
-  Future<Unit> createProduct(Params params) async {
+  Future<ProductModel> createProduct(Params params) async {
     try {
-      await dio.post(
+      final response = await dio.post(
         '/products',
         data: params.body,
         cancelToken: params.cancelToken,
       );
 
-      return unit;
+      return ProductModel.fromJson(response.data);
     } catch (e) {
       throw RemoteExceptionMapper.map(e);
     }
@@ -57,17 +57,22 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  Future<Unit> updateProduct(Params params) async {
+  Future<ProductModel> updateProduct(Params params) async {
     try {
-      await dio.put(
+      final response = await dio.put(
         '/products/${params.endPoint}',
         data: params.body,
         cancelToken: params.cancelToken,
       );
 
-      return unit;
+      return ProductModel.fromJson(response.data);
     } catch (e) {
       throw RemoteExceptionMapper.map(e);
     }
+  }
+
+  @override
+  Future<Unit> syncProducts(Unit unit) {
+    throw UnimplementedError();
   }
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductModel implements DiagnosticableTreeMixin {
 
- int get id; String get name; int get price; String get description; String get status; String get updatedAt;
+ int? get localId;@JsonKey(name: 'id') int? get serverId; String get name; int get price; String get description; String get status; DateTime get updatedAt; bool get synced; DateTime? get lastSyncedAt;
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $ProductModelCopyWith<ProductModel> get copyWith => _$ProductModelCopyWithImpl<P
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductModel'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced))..add(DiagnosticsProperty('lastSyncedAt', lastSyncedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,price,description,status,updatedAt);
+int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced,lastSyncedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductModel(id: $id, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt)';
+  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced, lastSyncedAt: $lastSyncedAt)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $ProductModelCopyWith<$Res>  {
   factory $ProductModelCopyWith(ProductModel value, $Res Function(ProductModel) _then) = _$ProductModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, int price, String description, String status, String updatedAt
+ int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced, DateTime? lastSyncedAt
 });
 
 
@@ -71,15 +71,18 @@ class _$ProductModelCopyWithImpl<$Res>
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,Object? lastSyncedAt = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+localId: freezed == localId ? _self.localId : localId // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as String,
+as DateTime,synced: null == synced ? _self.synced : synced // ignore: cast_nullable_to_non_nullable
+as bool,lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -164,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  int price,  String description,  String status,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
-return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_that.updatedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
   return orElse();
 
 }
@@ -185,10 +188,10 @@ return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  int price,  String description,  String status,  String updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel():
-return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_that.updatedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +208,10 @@ return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  int price,  String description,  String status,  String updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
-return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_that.updatedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
   return null;
 
 }
@@ -220,15 +223,18 @@ return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_
 @JsonSerializable()
 
 class _ProductModel extends ProductModel with DiagnosticableTreeMixin {
-   _ProductModel({required this.id, required this.name, required this.price, required this.description, required this.status, required this.updatedAt}): super._();
+  const _ProductModel({this.localId, @JsonKey(name: 'id') this.serverId, required this.name, required this.price, required this.description, required this.status, required this.updatedAt, this.synced = true, this.lastSyncedAt}): super._();
   factory _ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
 
-@override final  int id;
+@override final  int? localId;
+@override@JsonKey(name: 'id') final  int? serverId;
 @override final  String name;
 @override final  int price;
 @override final  String description;
 @override final  String status;
-@override final  String updatedAt;
+@override final  DateTime updatedAt;
+@override@JsonKey() final  bool synced;
+@override final  DateTime? lastSyncedAt;
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
@@ -244,21 +250,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductModel'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced))..add(DiagnosticsProperty('lastSyncedAt', lastSyncedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,price,description,status,updatedAt);
+int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced,lastSyncedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductModel(id: $id, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt)';
+  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced, lastSyncedAt: $lastSyncedAt)';
 }
 
 
@@ -269,7 +275,7 @@ abstract mixin class _$ProductModelCopyWith<$Res> implements $ProductModelCopyWi
   factory _$ProductModelCopyWith(_ProductModel value, $Res Function(_ProductModel) _then) = __$ProductModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, int price, String description, String status, String updatedAt
+ int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced, DateTime? lastSyncedAt
 });
 
 
@@ -286,15 +292,18 @@ class __$ProductModelCopyWithImpl<$Res>
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,Object? lastSyncedAt = freezed,}) {
   return _then(_ProductModel(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+localId: freezed == localId ? _self.localId : localId // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as String,
+as DateTime,synced: null == synced ? _self.synced : synced // ignore: cast_nullable_to_non_nullable
+as bool,lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

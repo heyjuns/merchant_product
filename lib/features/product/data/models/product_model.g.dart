@@ -8,20 +8,28 @@ part of 'product_model.dart';
 
 _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
     _ProductModel(
-      id: (json['id'] as num).toInt(),
+      localId: (json['localId'] as num?)?.toInt(),
+      serverId: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
       price: (json['price'] as num).toInt(),
       description: json['description'] as String,
       status: json['status'] as String,
-      updatedAt: json['updatedAt'] as String,
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      synced: json['synced'] as bool? ?? true,
+      lastSyncedAt: json['lastSyncedAt'] == null
+          ? null
+          : DateTime.parse(json['lastSyncedAt'] as String),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'localId': instance.localId,
+      'id': instance.serverId,
       'name': instance.name,
       'price': instance.price,
       'description': instance.description,
       'status': instance.status,
-      'updatedAt': instance.updatedAt,
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'synced': instance.synced,
+      'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
     };
