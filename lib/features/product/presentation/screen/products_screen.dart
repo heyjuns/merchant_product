@@ -165,7 +165,11 @@ class _Item extends StatelessWidget {
             StatusDotWidget(status: product.status),
           ],
         ),
-        subtitle: Text(product.description, maxLines: 2, overflow: .ellipsis),
+        subtitle: Text(
+          product.updatedAt.toString(),
+          maxLines: 2,
+          overflow: .ellipsis,
+        ),
       ),
     );
   }

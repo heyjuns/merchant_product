@@ -13,73 +13,69 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final GetProductsUsecase getProductsUseCase;
   final StreamProductsUsecase streamProductsUsecase;
 
-  StreamSubscription<List<ProductEntity>>? _streamSubscription;
-
-  ProductsDto _paginationDto = ProductsDto.init();
-
   ProductsBloc({
     required this.getProductsUseCase,
     required this.streamProductsUsecase,
   }) : super(const ProductsState.initial()) {
     on<_Fetch>(_onFetch, transformer: restartable());
     on<_LoadMore>(_onLoadMore, transformer: droppable());
-    on<_ProductsUpdated>(_onProductsUpdated);
   }
 
-  Future<void> _startListening() async {
-    await _streamSubscription?.cancel();
+  final List<ProductEntity> _products = [];
+  ProductsDto _paginationDto = ProductsDto.init();
 
-    _streamSubscription = streamProductsUsecase
-        .call(Params(queryParameters: _paginationDto.toJson()))
-        .listen((products) {
-          add(ProductsEvent.productsUpdated(products));
-        });
-  }
+  /// ================= FETCH =================
 
   Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
+    _products.clear();
     _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
 
     emit(
       ProductsState.loading(
-        products: List.generate(10, (_) => ProductEntity.init()),
+        products: List.generate(4, (_) => ProductEntity.init()),
       ),
     );
 
-    await _startListening();
+    /// 🔥 Start listening to stream
+    await emit.forEach<List<ProductEntity>>(
+      streamProductsUsecase.call(
+        Params(queryParameters: _paginationDto.toJson()),
+      ),
+      onData: (data) {
+        _products
+          ..clear()
+          ..addAll(data);
 
+        final hasReachedMax = data.length < _paginationDto.limit;
+
+        if (!hasReachedMax) {
+          _paginationDto = _paginationDto.copyWith(
+            page: _paginationDto.page + 1,
+          );
+        }
+
+        return ProductsState.loaded(
+          products: List.unmodifiable(_products),
+          hasReachedMax: hasReachedMax,
+        );
+      },
+    );
+
+    /// 🔥 Trigger remote fetch AFTER starting stream
     await getProductsUseCase.call(
       Params(queryParameters: _paginationDto.toJson()),
     );
   }
+
+  /// ================= LOAD MORE =================
 
   Future<void> _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) async {
     final currentState = state;
 
     if (currentState is! _Loaded || currentState.hasReachedMax) return;
 
-    _paginationDto = _paginationDto.copyWith(page: _paginationDto.page + 1);
-
-    await _startListening();
-
     await getProductsUseCase.call(
       Params(queryParameters: _paginationDto.toJson()),
     );
-  }
-
-  void _onProductsUpdated(_ProductsUpdated event, Emitter<ProductsState> emit) {
-    final hasReachedMax = event.products.length < _paginationDto.limit;
-
-    emit(
-      ProductsState.loaded(
-        products: event.products,
-        hasReachedMax: hasReachedMax,
-      ),
-    );
-  }
-
-  @override
-  Future<void> close() async {
-    await _streamSubscription?.cancel();
-    return super.close();
   }
 }
