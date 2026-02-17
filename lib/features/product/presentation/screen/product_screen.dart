@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
 import 'package:merchant_product/core/extensions/num_extensions.dart';
 import 'package:merchant_product/features/product/domain/domain.dart';
+import 'package:merchant_product/features/product/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../controller/product/product_bloc.dart';
 import '../widget/status_dot_widget.dart';
@@ -44,7 +46,15 @@ class ProductScreen extends HookWidget {
           return state.maybeWhen(
             loading: (product) =>
                 Skeletonizer(enabled: true, child: _Content(product: product)),
-            loaded: (product) => _Content(product: product),
+            loaded: (product) => _Content(
+              product: product,
+              onEditTap: () {
+                context.pushNamed(
+                  ProductRoutes.edit.name,
+                  pathParameters: {'id': product.id.toString()},
+                );
+              },
+            ),
             orElse: () => SizedBox(),
           );
         },
@@ -55,7 +65,8 @@ class ProductScreen extends HookWidget {
 
 class _Content extends StatelessWidget {
   final ProductEntity product;
-  const _Content({super.key, required this.product});
+  final VoidCallback? onEditTap;
+  const _Content({super.key, required this.product, this.onEditTap});
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +121,11 @@ class _Content extends StatelessWidget {
         ),
         Divider(),
         SizedBox(height: 16),
-        FButton(onPress: () {}, prefix: Icon(Icons.edit), child: Text('Edit')),
+        FButton(
+          onPress: onEditTap,
+          prefix: Icon(Icons.edit),
+          child: Text('Edit'),
+        ),
       ],
     );
   }

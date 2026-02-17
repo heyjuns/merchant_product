@@ -34,7 +34,13 @@ abstract class ProductRouter {
     GoRoute(
       path: ProductRoutes.edit.path,
       name: ProductRoutes.edit.name,
-      builder: (_, state) => EditProductScreen(),
+      builder: (_, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => sl<EditProductBloc>()),
+          BlocProvider(create: (context) => sl<ProductBloc>()),
+        ],
+        child: EditProductScreen(id: int.parse(state.pathParameters['id']!)),
+      ),
     ),
   ];
 }
