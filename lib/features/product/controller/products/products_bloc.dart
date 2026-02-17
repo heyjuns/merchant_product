@@ -23,22 +23,16 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   }) : super(const ProductsState.initial()) {
     on<_Fetch>(_onFetch, transformer: restartable());
     on<_LoadMore>(_onLoadMore, transformer: droppable());
+    on<_ProductsUpdated>(_onProductsUpdated);
+  }
 
-    // ✅ Start listening to the DB stream immediately when bloc is created
+  Future<void> _startListening() async {
+    await _streamSubscription?.cancel();
+
     _streamSubscription = streamProductsUsecase
         .call(Params(queryParameters: _paginationDto.toJson()))
         .listen((products) {
-          final hasReachedMax = products.length < _paginationDto.limit;
-
-          // Safe emit using addPostFrameCallback pattern
-          if (!isClosed) {
-            emit(
-              ProductsState.loaded(
-                products: products,
-                hasReachedMax: hasReachedMax,
-              ),
-            );
-          }
+          add(ProductsEvent.productsUpdated(products));
         });
   }
 
@@ -51,7 +45,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       ),
     );
 
-    // Trigger remote fetch safely
+    await _startListening();
+
     await getProductsUseCase.call(
       Params(queryParameters: _paginationDto.toJson()),
     );
@@ -64,9 +59,21 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
     _paginationDto = _paginationDto.copyWith(page: _paginationDto.page + 1);
 
-    // Fire remote request for next page
+    await _startListening();
+
     await getProductsUseCase.call(
       Params(queryParameters: _paginationDto.toJson()),
+    );
+  }
+
+  void _onProductsUpdated(_ProductsUpdated event, Emitter<ProductsState> emit) {
+    final hasReachedMax = event.products.length < _paginationDto.limit;
+
+    emit(
+      ProductsState.loaded(
+        products: event.products,
+        hasReachedMax: hasReachedMax,
+      ),
     );
   }
 

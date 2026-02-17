@@ -8,11 +8,10 @@ class ProductsTable extends Table {
   TextColumn get description => text()();
   TextColumn get status => text()();
   DateTimeColumn get updatedAt => dateTime()();
-  BoolColumn get synced => boolean().withDefault(const Constant(true))();
-  DateTimeColumn get lastSyncedAt => dateTime().nullable()();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();
 
   @override
   List<Set<Column>> get uniqueKeys => [
-    {serverId},
+    {localId},
   ];
 }

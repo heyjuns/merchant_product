@@ -95,18 +95,7 @@ class $ProductsTableTable extends ProductsTable
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'CHECK ("synced" IN (0, 1))',
     ),
-    defaultValue: const Constant(true),
-  );
-  static const VerificationMeta _lastSyncedAtMeta = const VerificationMeta(
-    'lastSyncedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
-    'last_synced_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
+    defaultValue: const Constant(false),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -118,7 +107,6 @@ class $ProductsTableTable extends ProductsTable
     status,
     updatedAt,
     synced,
-    lastSyncedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -193,15 +181,6 @@ class $ProductsTableTable extends ProductsTable
         synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
       );
     }
-    if (data.containsKey('last_synced_at')) {
-      context.handle(
-        _lastSyncedAtMeta,
-        lastSyncedAt.isAcceptableOrUnknown(
-          data['last_synced_at']!,
-          _lastSyncedAtMeta,
-        ),
-      );
-    }
     return context;
   }
 
@@ -209,7 +188,7 @@ class $ProductsTableTable extends ProductsTable
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-    {serverId},
+    {localId},
   ];
   @override
   ProductsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
@@ -247,10 +226,6 @@ class $ProductsTableTable extends ProductsTable
         DriftSqlType.bool,
         data['${effectivePrefix}synced'],
       )!,
-      lastSyncedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_synced_at'],
-      ),
     );
   }
 
@@ -270,7 +245,6 @@ class ProductsTableData extends DataClass
   final String status;
   final DateTime updatedAt;
   final bool synced;
-  final DateTime? lastSyncedAt;
   const ProductsTableData({
     required this.localId,
     this.serverId,
@@ -280,7 +254,6 @@ class ProductsTableData extends DataClass
     required this.status,
     required this.updatedAt,
     required this.synced,
-    this.lastSyncedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -295,9 +268,6 @@ class ProductsTableData extends DataClass
     map['status'] = Variable<String>(status);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     map['synced'] = Variable<bool>(synced);
-    if (!nullToAbsent || lastSyncedAt != null) {
-      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
-    }
     return map;
   }
 
@@ -313,9 +283,6 @@ class ProductsTableData extends DataClass
       status: Value(status),
       updatedAt: Value(updatedAt),
       synced: Value(synced),
-      lastSyncedAt: lastSyncedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastSyncedAt),
     );
   }
 
@@ -333,7 +300,6 @@ class ProductsTableData extends DataClass
       status: serializer.fromJson<String>(json['status']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       synced: serializer.fromJson<bool>(json['synced']),
-      lastSyncedAt: serializer.fromJson<DateTime?>(json['lastSyncedAt']),
     );
   }
   @override
@@ -348,7 +314,6 @@ class ProductsTableData extends DataClass
       'status': serializer.toJson<String>(status),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'synced': serializer.toJson<bool>(synced),
-      'lastSyncedAt': serializer.toJson<DateTime?>(lastSyncedAt),
     };
   }
 
@@ -361,7 +326,6 @@ class ProductsTableData extends DataClass
     String? status,
     DateTime? updatedAt,
     bool? synced,
-    Value<DateTime?> lastSyncedAt = const Value.absent(),
   }) => ProductsTableData(
     localId: localId ?? this.localId,
     serverId: serverId.present ? serverId.value : this.serverId,
@@ -371,7 +335,6 @@ class ProductsTableData extends DataClass
     status: status ?? this.status,
     updatedAt: updatedAt ?? this.updatedAt,
     synced: synced ?? this.synced,
-    lastSyncedAt: lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
   );
   ProductsTableData copyWithCompanion(ProductsTableCompanion data) {
     return ProductsTableData(
@@ -385,9 +348,6 @@ class ProductsTableData extends DataClass
       status: data.status.present ? data.status.value : this.status,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       synced: data.synced.present ? data.synced.value : this.synced,
-      lastSyncedAt: data.lastSyncedAt.present
-          ? data.lastSyncedAt.value
-          : this.lastSyncedAt,
     );
   }
 
@@ -401,8 +361,7 @@ class ProductsTableData extends DataClass
           ..write('description: $description, ')
           ..write('status: $status, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('synced: $synced, ')
-          ..write('lastSyncedAt: $lastSyncedAt')
+          ..write('synced: $synced')
           ..write(')'))
         .toString();
   }
@@ -417,7 +376,6 @@ class ProductsTableData extends DataClass
     status,
     updatedAt,
     synced,
-    lastSyncedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -430,8 +388,7 @@ class ProductsTableData extends DataClass
           other.description == this.description &&
           other.status == this.status &&
           other.updatedAt == this.updatedAt &&
-          other.synced == this.synced &&
-          other.lastSyncedAt == this.lastSyncedAt);
+          other.synced == this.synced);
 }
 
 class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
@@ -443,7 +400,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
   final Value<String> status;
   final Value<DateTime> updatedAt;
   final Value<bool> synced;
-  final Value<DateTime?> lastSyncedAt;
   const ProductsTableCompanion({
     this.localId = const Value.absent(),
     this.serverId = const Value.absent(),
@@ -453,7 +409,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     this.status = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.synced = const Value.absent(),
-    this.lastSyncedAt = const Value.absent(),
   });
   ProductsTableCompanion.insert({
     this.localId = const Value.absent(),
@@ -464,7 +419,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     required String status,
     required DateTime updatedAt,
     this.synced = const Value.absent(),
-    this.lastSyncedAt = const Value.absent(),
   }) : name = Value(name),
        price = Value(price),
        description = Value(description),
@@ -479,7 +433,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     Expression<String>? status,
     Expression<DateTime>? updatedAt,
     Expression<bool>? synced,
-    Expression<DateTime>? lastSyncedAt,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -490,7 +443,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
       if (status != null) 'status': status,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (synced != null) 'synced': synced,
-      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
     });
   }
 
@@ -503,7 +455,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     Value<String>? status,
     Value<DateTime>? updatedAt,
     Value<bool>? synced,
-    Value<DateTime?>? lastSyncedAt,
   }) {
     return ProductsTableCompanion(
       localId: localId ?? this.localId,
@@ -514,7 +465,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
       status: status ?? this.status,
       updatedAt: updatedAt ?? this.updatedAt,
       synced: synced ?? this.synced,
-      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
     );
   }
 
@@ -545,9 +495,6 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     if (synced.present) {
       map['synced'] = Variable<bool>(synced.value);
     }
-    if (lastSyncedAt.present) {
-      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
-    }
     return map;
   }
 
@@ -561,8 +508,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
           ..write('description: $description, ')
           ..write('status: $status, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('synced: $synced, ')
-          ..write('lastSyncedAt: $lastSyncedAt')
+          ..write('synced: $synced')
           ..write(')'))
         .toString();
   }
@@ -589,7 +535,6 @@ typedef $$ProductsTableTableCreateCompanionBuilder =
       required String status,
       required DateTime updatedAt,
       Value<bool> synced,
-      Value<DateTime?> lastSyncedAt,
     });
 typedef $$ProductsTableTableUpdateCompanionBuilder =
     ProductsTableCompanion Function({
@@ -601,7 +546,6 @@ typedef $$ProductsTableTableUpdateCompanionBuilder =
       Value<String> status,
       Value<DateTime> updatedAt,
       Value<bool> synced,
-      Value<DateTime?> lastSyncedAt,
     });
 
 class $$ProductsTableTableFilterComposer
@@ -650,11 +594,6 @@ class $$ProductsTableTableFilterComposer
 
   ColumnFilters<bool> get synced => $composableBuilder(
     column: $table.synced,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
-    column: $table.lastSyncedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -707,11 +646,6 @@ class $$ProductsTableTableOrderingComposer
     column: $table.synced,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
-    column: $table.lastSyncedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$ProductsTableTableAnnotationComposer
@@ -748,11 +682,6 @@ class $$ProductsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get synced =>
       $composableBuilder(column: $table.synced, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
-    column: $table.lastSyncedAt,
-    builder: (column) => column,
-  );
 }
 
 class $$ProductsTableTableTableManager
@@ -800,7 +729,6 @@ class $$ProductsTableTableTableManager
                 Value<String> status = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> synced = const Value.absent(),
-                Value<DateTime?> lastSyncedAt = const Value.absent(),
               }) => ProductsTableCompanion(
                 localId: localId,
                 serverId: serverId,
@@ -810,7 +738,6 @@ class $$ProductsTableTableTableManager
                 status: status,
                 updatedAt: updatedAt,
                 synced: synced,
-                lastSyncedAt: lastSyncedAt,
               ),
           createCompanionCallback:
               ({
@@ -822,7 +749,6 @@ class $$ProductsTableTableTableManager
                 required String status,
                 required DateTime updatedAt,
                 Value<bool> synced = const Value.absent(),
-                Value<DateTime?> lastSyncedAt = const Value.absent(),
               }) => ProductsTableCompanion.insert(
                 localId: localId,
                 serverId: serverId,
@@ -832,7 +758,6 @@ class $$ProductsTableTableTableManager
                 status: status,
                 updatedAt: updatedAt,
                 synced: synced,
-                lastSyncedAt: lastSyncedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

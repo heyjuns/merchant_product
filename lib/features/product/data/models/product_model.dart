@@ -22,7 +22,6 @@ abstract class ProductModel with _$ProductModel {
     required DateTime updatedAt,
 
     @Default(true) bool synced,
-    DateTime? lastSyncedAt,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -38,7 +37,6 @@ abstract class ProductModel with _$ProductModel {
       status: row.status,
       updatedAt: row.updatedAt,
       synced: row.synced,
-      lastSyncedAt: row.lastSyncedAt,
     );
   }
 
@@ -52,7 +50,6 @@ abstract class ProductModel with _$ProductModel {
       status: Value(status),
       updatedAt: Value(updatedAt),
       synced: Value(synced),
-      lastSyncedAt: Value(lastSyncedAt),
     );
   }
 

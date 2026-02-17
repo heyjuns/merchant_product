@@ -16,9 +16,6 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       synced: json['synced'] as bool? ?? true,
-      lastSyncedAt: json['lastSyncedAt'] == null
-          ? null
-          : DateTime.parse(json['lastSyncedAt'] as String),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
@@ -31,5 +28,4 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'status': instance.status,
       'updatedAt': instance.updatedAt.toIso8601String(),
       'synced': instance.synced,
-      'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
     };

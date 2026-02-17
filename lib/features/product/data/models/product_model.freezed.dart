@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductModel implements DiagnosticableTreeMixin {
 
- int? get localId;@JsonKey(name: 'id') int? get serverId; String get name; int get price; String get description; String get status; DateTime get updatedAt; bool get synced; DateTime? get lastSyncedAt;
+ int? get localId;@JsonKey(name: 'id') int? get serverId; String get name; int get price; String get description; String get status; DateTime get updatedAt; bool get synced;
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $ProductModelCopyWith<ProductModel> get copyWith => _$ProductModelCopyWithImpl<P
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductModel'))
-    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced))..add(DiagnosticsProperty('lastSyncedAt', lastSyncedAt));
+    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced,lastSyncedAt);
+int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced, lastSyncedAt: $lastSyncedAt)';
+  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $ProductModelCopyWith<$Res>  {
   factory $ProductModelCopyWith(ProductModel value, $Res Function(ProductModel) _then) = _$ProductModelCopyWithImpl;
 @useResult
 $Res call({
- int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced, DateTime? lastSyncedAt
+ int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced
 });
 
 
@@ -71,7 +71,7 @@ class _$ProductModelCopyWithImpl<$Res>
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,Object? lastSyncedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,}) {
   return _then(_self.copyWith(
 localId: freezed == localId ? _self.localId : localId // ignore: cast_nullable_to_non_nullable
 as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
@@ -81,8 +81,7 @@ as int,description: null == description ? _self.description : description // ign
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,synced: null == synced ? _self.synced : synced // ignore: cast_nullable_to_non_nullable
-as bool,lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as bool,
   ));
 }
 
@@ -167,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
-return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced);case _:
   return orElse();
 
 }
@@ -188,10 +187,10 @@ return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.descri
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced)  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel():
-return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +207,10 @@ return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.descri
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced,  DateTime? lastSyncedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? localId, @JsonKey(name: 'id')  int? serverId,  String name,  int price,  String description,  String status,  DateTime updatedAt,  bool synced)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
-return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced,_that.lastSyncedAt);case _:
+return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.description,_that.status,_that.updatedAt,_that.synced);case _:
   return null;
 
 }
@@ -223,7 +222,7 @@ return $default(_that.localId,_that.serverId,_that.name,_that.price,_that.descri
 @JsonSerializable()
 
 class _ProductModel extends ProductModel with DiagnosticableTreeMixin {
-  const _ProductModel({this.localId, @JsonKey(name: 'id') this.serverId, required this.name, required this.price, required this.description, required this.status, required this.updatedAt, this.synced = true, this.lastSyncedAt}): super._();
+  const _ProductModel({this.localId, @JsonKey(name: 'id') this.serverId, required this.name, required this.price, required this.description, required this.status, required this.updatedAt, this.synced = true}): super._();
   factory _ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
 
 @override final  int? localId;
@@ -234,7 +233,6 @@ class _ProductModel extends ProductModel with DiagnosticableTreeMixin {
 @override final  String status;
 @override final  DateTime updatedAt;
 @override@JsonKey() final  bool synced;
-@override final  DateTime? lastSyncedAt;
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
@@ -250,21 +248,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductModel'))
-    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced))..add(DiagnosticsProperty('lastSyncedAt', lastSyncedAt));
+    ..add(DiagnosticsProperty('localId', localId))..add(DiagnosticsProperty('serverId', serverId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('synced', synced));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductModel&&(identical(other.localId, localId) || other.localId == localId)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.description, description) || other.description == description)&&(identical(other.status, status) || other.status == status)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.synced, synced) || other.synced == synced));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced,lastSyncedAt);
+int get hashCode => Object.hash(runtimeType,localId,serverId,name,price,description,status,updatedAt,synced);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced, lastSyncedAt: $lastSyncedAt)';
+  return 'ProductModel(localId: $localId, serverId: $serverId, name: $name, price: $price, description: $description, status: $status, updatedAt: $updatedAt, synced: $synced)';
 }
 
 
@@ -275,7 +273,7 @@ abstract mixin class _$ProductModelCopyWith<$Res> implements $ProductModelCopyWi
   factory _$ProductModelCopyWith(_ProductModel value, $Res Function(_ProductModel) _then) = __$ProductModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced, DateTime? lastSyncedAt
+ int? localId,@JsonKey(name: 'id') int? serverId, String name, int price, String description, String status, DateTime updatedAt, bool synced
 });
 
 
@@ -292,7 +290,7 @@ class __$ProductModelCopyWithImpl<$Res>
 
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,Object? lastSyncedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? localId = freezed,Object? serverId = freezed,Object? name = null,Object? price = null,Object? description = null,Object? status = null,Object? updatedAt = null,Object? synced = null,}) {
   return _then(_ProductModel(
 localId: freezed == localId ? _self.localId : localId // ignore: cast_nullable_to_non_nullable
 as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
@@ -302,8 +300,7 @@ as int,description: null == description ? _self.description : description // ign
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,synced: null == synced ? _self.synced : synced // ignore: cast_nullable_to_non_nullable
-as bool,lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as bool,
   ));
 }
 

@@ -31,7 +31,7 @@ class ProductRepositoryImpl implements ProductRepository {
     try {
       final response = await remote.getProducts(params);
 
-      final remoteList = response; // assume List<ProductDto>
+      final remoteList = response;
 
       for (final dto in remoteList) {
         final model = dto.copyWith(synced: true);
@@ -43,6 +43,13 @@ class ProductRepositoryImpl implements ProductRepository {
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
+  }
+
+  @override
+  Stream<List<ProductEntity>> streamProducts(Params params) {
+    return local
+        .watchProducts(params)
+        .map((models) => models.map((e) => e.toEntity()).toList());
   }
 
   @override
@@ -103,34 +110,38 @@ class ProductRepositoryImpl implements ProductRepository {
       final pending = await local.getPendingProducts();
 
       for (final product in pending) {
-        if (product.serverId == null) {
-          // CREATE REMOTE
-          final response = await remote.createProduct(
-            Params(body: product.toCreateProductDto().toJson()),
-          );
+        try {
+          if (product.serverId == null) {
+            // CREATE REMOTE
+            final response = await remote.createProduct(
+              Params(body: product.toCreateProductDto().toJson()),
+            );
 
-          final synced = product.copyWith(
-            serverId: response.serverId,
-            synced: true,
-          );
+            final synced = product.copyWith(
+              serverId: response.serverId,
+              synced: true,
+            );
 
-          await local.addOrUpdateProduct(synced);
-        } else {
-          // UPDATE REMOTE
-          final response = await remote.updateProduct(
-            Params(
-              endPoint: product.serverId!.toString(),
-              body: product.toCreateProductDto().toJson(),
-            ),
-          );
+            await local.addOrUpdateProduct(synced);
+          } else {
+            // UPDATE REMOTE
+            final response = await remote.updateProduct(
+              Params(
+                endPoint: product.serverId!.toString(),
+                body: product.toCreateProductDto().toJson(),
+              ),
+            );
 
-          final synced = product.copyWith(
-            serverId: response.serverId,
-            synced: true,
-            updatedAt: response.updatedAt,
-          );
+            final synced = product.copyWith(
+              serverId: response.serverId,
+              synced: true,
+              updatedAt: response.updatedAt,
+            );
 
-          await local.addOrUpdateProduct(synced);
+            await local.addOrUpdateProduct(synced);
+          }
+        } catch (_) {
+          continue;
         }
       }
 
@@ -138,12 +149,5 @@ class ProductRepositoryImpl implements ProductRepository {
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
-  }
-
-  @override
-  Stream<List<ProductEntity>> streamProducts(Params params) {
-    return local
-        .watchProducts(params)
-        .map((models) => models.map((e) => e.toEntity()).toList());
   }
 }
