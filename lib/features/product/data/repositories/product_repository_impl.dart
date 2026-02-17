@@ -13,13 +13,8 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   BaseResponse<ProductEntity> getProduct(Params params) async {
     try {
-      final serverId = params.endPoint;
-
-      if (serverId == null) {
-        return left(CacheFailure(message: 'Missing id'));
-      }
-
-      final model = await local.getProductById(serverId as int);
+      final localId = int.parse(params.endPoint!);
+      final model = await local.getProductById(localId);
 
       if (model == null) {
         return left(CacheFailure(message: 'Product not found'));
@@ -79,7 +74,7 @@ class ProductRepositoryImpl implements ProductRepository {
     try {
       final dto = CreateProductDto.fromJson(params.body!);
 
-      final existing = await local.getProductById(params.endPoint! as int);
+      final existing = await local.getProductById(int.parse(params.endPoint!));
 
       if (existing == null) {
         return left(CacheFailure(message: 'Product not found'));

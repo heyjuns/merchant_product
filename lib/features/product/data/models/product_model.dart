@@ -58,7 +58,7 @@ abstract class ProductModel with _$ProductModel {
 
   ProductEntity toEntity() {
     return ProductEntity(
-      id: serverId,
+      id: localId ?? serverId,
       name: name,
       price: price,
       description: description,

@@ -48,10 +48,10 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
   // FIND BY SERVER ID
   // ==========================================================
   @override
-  Future<ProductModel?> getProductById(int serverId) async {
+  Future<ProductModel?> getProductById(int localId) async {
     final row = await (select(
       db.productsTable,
-    )..where((tbl) => tbl.serverId.equals(serverId))).getSingleOrNull();
+    )..where((tbl) => tbl.localId.equals(localId))).getSingleOrNull();
 
     return row == null ? null : ProductModel.fromDb(row);
   }
