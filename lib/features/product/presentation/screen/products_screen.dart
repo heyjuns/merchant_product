@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
 import 'package:merchant_product/features/product/controller/controller.dart';
 import 'package:merchant_product/features/product/domain/domain.dart';
+import 'package:merchant_product/features/product/presentation/widget/status_dot_widget.dart';
 import 'package:merchant_product/features/product/router/router.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:merchant_product/ui/infinite_scroll_item.dart';
@@ -45,6 +46,7 @@ class ProductsScreen extends HookWidget {
                 items: products,
                 itemBuilder: (context, index) =>
                     _Item(product: products[index]),
+                separatorBuilder: (context, index) => SizedBox(height: 8),
                 itemSkeletonBuilder: (context) =>
                     _Item(product: ProductEntity.init()),
                 controller: scrollController,
@@ -85,6 +87,7 @@ class ProductsScreen extends HookWidget {
                   itemBuilder: (context, index) {
                     final item = products[index];
                     return _Item(
+                      key: ObjectKey(item),
                       product: item,
                       onTap: () {
                         context.pushNamed(
@@ -115,8 +118,8 @@ class _Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return FTappable(
+      onPress: onTap,
       child: FCard(
         title: Row(
           mainAxisAlignment: .spaceBetween,
@@ -128,18 +131,7 @@ class _Item extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: .circle,
-                color: switch (product.status) {
-                  ProductStatus.active => null,
-                  ProductStatus.draft => context.theme.colors.destructive,
-                  ProductStatus.unknown => null,
-                },
-              ),
-            ),
+            StatusDotWidget(status: product.status),
           ],
         ),
         subtitle: Text(product.description, maxLines: 2, overflow: .ellipsis),

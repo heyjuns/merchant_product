@@ -16,19 +16,18 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     on<_LoadMore>(_onLoadMore, transformer: droppable());
   }
 
+  final List<ProductEntity> dummies = List.generate(
+    10,
+    (index) => ProductEntity.init(),
+  );
+
   final List<ProductEntity> _products = [];
   ProductsDto _paginationDto = ProductsDto.init();
 
   Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
     _products.clear();
     _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
-
-    emit(
-      ProductsState.loading(
-        products: List.generate(4, (_) => ProductEntity.init()),
-      ),
-    );
-
+    emit(ProductsState.loading(products: dummies));
     await _fetchPage(emit, isRefresh: true);
   }
 
