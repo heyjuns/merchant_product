@@ -9,11 +9,14 @@ Future<void> initProductInjection() async {
   sl.registerFactory(() => ProductsBloc(getProductsUseCase: sl()));
   sl.registerFactory(() => CreateProductBloc(createProductUsecase: sl()));
   sl.registerFactory(() => EditProductBloc(updateProductUsecase: sl()));
+  sl.registerFactory(() => SyncProductsBloc(syncProductsUsecase: sl()));
 
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProductUsecase(sl()));
   sl.registerLazySingleton(() => CreateProductUsecase(sl()));
+  sl.registerLazySingleton(() => SyncProductsUsecase(sl()));
+
   sl.registerLazySingleton(() => ProductsDatabase());
 
   sl.registerLazySingleton<ProductRepository>(

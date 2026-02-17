@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
+import 'package:merchant_product/core/service_locator.dart';
 import 'package:merchant_product/features/product/controller/controller.dart';
 import 'package:merchant_product/features/product/domain/domain.dart';
 import 'package:merchant_product/features/product/presentation/widget/status_dot_widget.dart';
@@ -28,6 +29,21 @@ class ProductsScreen extends HookWidget {
       header: FHeader(
         title: const Text('Products'),
         suffixes: [
+          BlocProvider(
+            create: (context) => sl<SyncProductsBloc>(),
+            child: BlocBuilder<SyncProductsBloc, SyncProductsState>(
+              builder: (context, state) {
+                return FButton.icon(
+                  child: Icon(Icons.sync),
+                  onPress: () {
+                    context.read<SyncProductsBloc>().add(
+                      SyncProductsEvent.started(),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
           FButton.icon(
             variant: .ghost,
             onPress: () {

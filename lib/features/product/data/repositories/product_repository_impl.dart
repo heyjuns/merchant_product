@@ -63,7 +63,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   // --- Create product (offline-first) ---
   @override
-  BaseResponse<Unit> createProduct(Params params) async {
+  BaseResponse<int> createProduct(Params params) async {
     try {
       // Convert params.body → ProductModel
       final model = ProductModel.fromJson(params.body!);
@@ -72,7 +72,7 @@ class ProductRepositoryImpl implements ProductRepository {
       await localDatasource.addOrUpdateProduct(model, synced: false);
 
       // 2️⃣ Return immediately, sync to remote later
-      return right(unit);
+      return right(model.id);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
@@ -80,7 +80,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   // --- Update product (offline-first) ---
   @override
-  BaseResponse<Unit> updateProduct(Params params) async {
+  BaseResponse<int> updateProduct(Params params) async {
     try {
       final model = ProductModel.fromJson(params.body!);
 
@@ -88,14 +88,53 @@ class ProductRepositoryImpl implements ProductRepository {
       await localDatasource.addOrUpdateProduct(model, synced: false);
 
       // 2️⃣ Return immediately, sync to remote later
-      return right(unit);
+      return right(model.id);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }
   }
 
-  // Optional: fetch pending products for syncing
-  Future<List<ProductModel>> getPendingProducts() async {
-    return localDatasource.getPendingProducts();
+  // Future<List<ProductModel>> getPendingProducts() async {
+  //   return localDatasource.getPendingProducts();
+  // }
+
+  @override
+  BaseResponse<Unit> sync(Unit unit) async {
+    try {
+      // final hasNetwork = await networkChecker.isConnected();
+      // if (!hasNetwork) return right(unit);
+
+      final pendingProducts = await localDatasource.getPendingProducts();
+
+      print(pendingProducts.map((e) => e.id));
+      for (final product in pendingProducts) {
+        try {
+          if (product.id == 0) {
+            // create on server
+            final params = Params(body: product.toJson()..remove('id'));
+            final id = await remoteDatasource.createProduct(params);
+
+            final syncedModel = product.copyWith(id: id);
+            await localDatasource.addOrUpdateProduct(syncedModel, synced: true);
+          } else {
+            // update on server
+            final params = Params(
+              body: product.toJson(),
+              endPoint: product.id.toString(),
+            );
+
+            await remoteDatasource.updateProduct(params);
+
+            await localDatasource.addOrUpdateProduct(product, synced: true);
+          }
+        } catch (_) {
+          // ignore, retry later
+        }
+      }
+
+      return right(unit);
+    } on ErrorException catch (e) {
+      return left(e.toFailure());
+    }
   }
 }

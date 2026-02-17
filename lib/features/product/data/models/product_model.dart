@@ -11,7 +11,7 @@ part 'product_model.g.dart';
 abstract class ProductModel with _$ProductModel {
   ProductModel._();
   factory ProductModel({
-    required int id,
+    @Default(0) int id, // set 0 to support offline first
     required String name,
     required int price,
     required String description,

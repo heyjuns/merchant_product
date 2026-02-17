@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductModel implements DiagnosticableTreeMixin {
 
- int get id; String get name; int get price; String get description; String get status; String get updatedAt;
+ int get id;// set 0 to support offline first
+ String get name; int get price; String get description; String get status; String get updatedAt;
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -220,10 +221,11 @@ return $default(_that.id,_that.name,_that.price,_that.description,_that.status,_
 @JsonSerializable()
 
 class _ProductModel extends ProductModel with DiagnosticableTreeMixin {
-   _ProductModel({required this.id, required this.name, required this.price, required this.description, required this.status, required this.updatedAt}): super._();
+   _ProductModel({this.id = 0, required this.name, required this.price, required this.description, required this.status, required this.updatedAt}): super._();
   factory _ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
 
-@override final  int id;
+@override@JsonKey() final  int id;
+// set 0 to support offline first
 @override final  String name;
 @override final  int price;
 @override final  String description;
