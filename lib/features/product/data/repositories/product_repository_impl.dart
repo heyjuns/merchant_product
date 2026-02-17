@@ -112,9 +112,9 @@ class ProductRepositoryImpl implements ProductRepository {
           if (product.id == 0) {
             // create on server
             final params = Params(body: product.toJson()..remove('id'));
-            final id = await remoteDatasource.createProduct(params);
+            final model = await remoteDatasource.createProduct(params);
 
-            final syncedModel = product.copyWith(id: id);
+            final syncedModel = product.copyWith(id: model.id);
             await localDatasource.addOrUpdateProduct(syncedModel, synced: true);
           } else {
             // update on server

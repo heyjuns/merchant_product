@@ -4,6 +4,6 @@ import '../../data/data.dart';
 abstract class ProductRemoteDatasource {
   Future<List<ProductModel>> getProducts(Params params);
   Future<ProductModel> getProduct(Params id);
-  Future<int> createProduct(Params params);
-  Future<int> updateProduct(Params params);
+  Future<ProductModel> createProduct(Params params);
+  Future<ProductModel> updateProduct(Params params);
 }
