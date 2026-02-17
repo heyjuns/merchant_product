@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
 import 'package:merchant_product/core/extensions/num_extensions.dart';
-import 'package:merchant_product/features/product/domain/domain.dart';
 import 'package:merchant_product/features/product/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../controller/product/product_bloc.dart';
@@ -48,11 +47,15 @@ class ProductScreen extends HookWidget {
                 Skeletonizer(enabled: true, child: _Content(product: product)),
             loaded: (product) => _Content(
               product: product,
-              onEditTap: () {
-                context.pushNamed(
+              onEditTap: () async {
+                final bool? result = await context.pushNamed(
                   ProductRoutes.edit.name,
                   pathParameters: {'id': product.id.toString()},
                 );
+
+                if (result is bool && result) {
+                  productBloc.add(ProductEvent.fetch(id));
+                }
               },
             ),
             orElse: () => SizedBox(),
@@ -66,7 +69,7 @@ class ProductScreen extends HookWidget {
 class _Content extends StatelessWidget {
   final ProductEntity product;
   final VoidCallback? onEditTap;
-  const _Content({super.key, required this.product, this.onEditTap});
+  const _Content({required this.product, this.onEditTap});
 
   @override
   Widget build(BuildContext context) {
