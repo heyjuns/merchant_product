@@ -47,6 +47,7 @@ dependencies:
   get_it: ^9.2.0
   talker_dio_logger: ^5.1.13
   bloc_concurrency: ^0.3.0
+  forui_hooks: ^0.18.0
 
 dev_dependencies:
   flutter_test:

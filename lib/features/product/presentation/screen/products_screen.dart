@@ -24,7 +24,18 @@ class ProductsScreen extends HookWidget {
     }, []);
 
     return FScaffold(
-      header: FHeader(title: const Text('Products')),
+      header: FHeader(
+        title: const Text('Products'),
+        suffixes: [
+          FButton.icon(
+            variant: .ghost,
+            onPress: () {
+              context.pushNamed(ProductRoutes.create.name);
+            },
+            child: const Icon(FIcons.plus),
+          ),
+        ],
+      ),
       child: BlocBuilder<ProductsBloc, ProductsState>(
         builder: (context, state) {
           return state.maybeWhen(
@@ -122,9 +133,11 @@ class _Item extends StatelessWidget {
               height: 8,
               decoration: BoxDecoration(
                 shape: .circle,
-                color: product.status == ProductStatus.active
-                    ? null
-                    : context.theme.colors.error,
+                color: switch (product.status) {
+                  ProductStatus.active => null,
+                  ProductStatus.draft => context.theme.colors.destructive,
+                  ProductStatus.unknown => null,
+                },
               ),
             ),
           ],

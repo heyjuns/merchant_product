@@ -8,6 +8,7 @@ import 'domain/domain.dart';
 Future<void> initProductInjection() async {
   sl.registerFactory(() => ProductBloc(getProductUsecase: sl()));
   sl.registerFactory(() => ProductsBloc(getProductsUseCase: sl()));
+  sl.registerFactory(() => CreateProductBloc(createProductUsecase: sl()));
 
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));

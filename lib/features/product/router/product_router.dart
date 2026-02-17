@@ -1,11 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:merchant_product/core/service_locator.dart';
+import 'package:merchant_product/features/product/product.dart';
 
 import '../controller/controller.dart';
-import '../presentation/screen/product_screen.dart';
-import '../presentation/screen/products_screen.dart';
-import 'product_routes.dart';
 
 abstract class ProductRouter {
   static List<GoRoute> get routes => [
@@ -24,6 +22,19 @@ abstract class ProductRouter {
         create: (_) => sl<ProductBloc>(),
         child: ProductScreen(id: int.parse(state.pathParameters['id']!)),
       ),
+    ),
+    GoRoute(
+      path: ProductRoutes.create.path,
+      name: ProductRoutes.create.name,
+      builder: (_, state) => BlocProvider(
+        create: (context) => sl<CreateProductBloc>(),
+        child: CreateProductScreen(),
+      ),
+    ),
+    GoRoute(
+      path: ProductRoutes.edit.path,
+      name: ProductRoutes.edit.name,
+      builder: (_, state) => EditProductScreen(),
     ),
   ];
 }

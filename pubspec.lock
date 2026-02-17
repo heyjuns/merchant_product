@@ -293,6 +293,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.0"
+  forui_hooks:
+    dependency: "direct main"
+    description:
+      name: forui_hooks
+      sha256: "95e512c5d5bbf136321f57d5c8dc4d2d4653d7a951300aeb25d101f5e0a4cbd7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.18.0"
   fpdart:
     dependency: "direct main"
     description:

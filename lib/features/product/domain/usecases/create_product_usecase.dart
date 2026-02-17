@@ -11,6 +11,6 @@ class CreateProductUsecase implements UseCase<Params, Unit> {
 
   @override
   BaseResponse<Unit> call(Params params) {
-    return repository.updateProduct(params);
+    return repository.createProduct(params);
   }
 }
