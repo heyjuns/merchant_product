@@ -40,6 +40,20 @@ class ProductsScreen extends HookWidget {
       child: BlocBuilder<ProductsBloc, ProductsState>(
         builder: (context, state) {
           return state.maybeWhen(
+            failed: (error) => Center(
+              child: Column(
+                mainAxisSize: .min,
+                children: [
+                  FButton.icon(
+                    child: Icon(Icons.refresh),
+                    onPress: () {
+                      bloc.add(ProductsEvent.fetch());
+                    },
+                  ),
+                  Text(error.message),
+                ],
+              ),
+            ),
             loading: (products) => Skeletonizer(
               enabled: true,
               child: InfiniteScrollItem(
