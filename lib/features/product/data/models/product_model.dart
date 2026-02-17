@@ -1,6 +1,9 @@
+import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:merchant_product/features/product/domain/domain.dart';
+
+import '../services/products_database.dart';
 part 'product_model.freezed.dart';
 part 'product_model.g.dart';
 
@@ -31,4 +34,27 @@ abstract class ProductModel with _$ProductModel {
     },
     updatedAt: DateTime.parse(updatedAt),
   );
+
+  factory ProductModel.fromDbRow(ProductsTableData row) {
+    return ProductModel(
+      id: row.id,
+      name: row.name,
+      price: row.price,
+      description: row.description,
+      status: row.status,
+      updatedAt: row.updatedAt.toIso8601String(),
+    );
+  }
+
+  ProductsTableCompanion toCompanion({bool synced = false}) {
+    return ProductsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      price: Value(price),
+      description: Value(description),
+      status: Value(status),
+      updatedAt: Value(DateTime.parse(updatedAt)),
+      synced: Value(synced),
+    );
+  }
 }

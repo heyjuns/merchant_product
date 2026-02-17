@@ -1,9 +1,8 @@
 import 'package:merchant_product/core/service_locator.dart';
+import 'package:merchant_product/features/product/data/services/products_database.dart';
 
 import 'controller/controller.dart';
-import 'data/data.dart';
-import 'data/repositories/repositories.dart';
-import 'domain/domain.dart';
+import 'product.dart';
 
 Future<void> initProductInjection() async {
   sl.registerFactory(() => ProductBloc(getProductUsecase: sl()));
@@ -15,10 +14,16 @@ Future<void> initProductInjection() async {
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProductUsecase(sl()));
   sl.registerLazySingleton(() => CreateProductUsecase(sl()));
+  sl.registerLazySingleton(() => ProductsDatabase());
 
   sl.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(remoteDatasource: sl()),
+    () => ProductRepositoryImpl(remoteDatasource: sl(), localDatasource: sl()),
   );
+
+  sl.registerLazySingleton<ProductLocalDatasource>(
+    () => ProductLocalDatasourceImpl(sl()),
+  );
+
   sl.registerLazySingleton<ProductRemoteDatasource>(
     () => ProductRemoteDatasourceImpl(sl()),
   );

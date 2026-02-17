@@ -11,7 +11,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   ProductRemoteDatasourceImpl(this.dio);
 
   @override
-  FutureResponse<Unit> createProduct(Params params) async {
+  Future<Unit> createProduct(Params params) async {
     try {
       await dio.post(
         '/products',
@@ -26,7 +26,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  FutureResponse<ProductModel> getProduct(Params params) async {
+  Future<ProductModel> getProduct(Params params) async {
     try {
       final response = await dio.get(
         '/products/${params.endPoint}',
@@ -40,7 +40,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  FutureResponse<List<ProductModel>> getProducts(Params params) async {
+  Future<List<ProductModel>> getProducts(Params params) async {
     try {
       final response = await dio.get(
         '/products/',
@@ -57,7 +57,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  FutureResponse<Unit> updateProduct(Params params) async {
+  Future<Unit> updateProduct(Params params) async {
     try {
       await dio.put(
         '/products/${params.endPoint}',
