@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:merchant_product/features/connectivity/connectivity_container.dart';
 import 'package:merchant_product/features/product/product_container.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -35,4 +36,5 @@ Future<void> setupApp() async {
   });
 
   initProductInjection();
+  initConnectivityContainer();
 }

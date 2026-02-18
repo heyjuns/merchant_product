@@ -55,13 +55,12 @@ extension ProductsEventPatterns on ProductsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Fetch value)?  fetch,TResult Function( _LoadMore value)?  loadMore,TResult Function( _ProductsUpdated value)?  productsUpdated,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Fetch value)?  fetch,TResult Function( _LoadMore value)?  loadMore,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch(_that);case _LoadMore() when loadMore != null:
-return loadMore(_that);case _ProductsUpdated() when productsUpdated != null:
-return productsUpdated(_that);case _:
+return loadMore(_that);case _:
   return orElse();
 
 }
@@ -79,13 +78,12 @@ return productsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Fetch value)  fetch,required TResult Function( _LoadMore value)  loadMore,required TResult Function( _ProductsUpdated value)  productsUpdated,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Fetch value)  fetch,required TResult Function( _LoadMore value)  loadMore,}){
 final _that = this;
 switch (_that) {
 case _Fetch():
 return fetch(_that);case _LoadMore():
-return loadMore(_that);case _ProductsUpdated():
-return productsUpdated(_that);case _:
+return loadMore(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +100,12 @@ return productsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Fetch value)?  fetch,TResult? Function( _LoadMore value)?  loadMore,TResult? Function( _ProductsUpdated value)?  productsUpdated,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Fetch value)?  fetch,TResult? Function( _LoadMore value)?  loadMore,}){
 final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch(_that);case _LoadMore() when loadMore != null:
-return loadMore(_that);case _ProductsUpdated() when productsUpdated != null:
-return productsUpdated(_that);case _:
+return loadMore(_that);case _:
   return null;
 
 }
@@ -125,12 +122,11 @@ return productsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetch,TResult Function()?  loadMore,TResult Function( List<ProductEntity> products)?  productsUpdated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetch,TResult Function()?  loadMore,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch();case _LoadMore() when loadMore != null:
-return loadMore();case _ProductsUpdated() when productsUpdated != null:
-return productsUpdated(_that.products);case _:
+return loadMore();case _:
   return orElse();
 
 }
@@ -148,12 +144,11 @@ return productsUpdated(_that.products);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetch,required TResult Function()  loadMore,required TResult Function( List<ProductEntity> products)  productsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetch,required TResult Function()  loadMore,}) {final _that = this;
 switch (_that) {
 case _Fetch():
 return fetch();case _LoadMore():
-return loadMore();case _ProductsUpdated():
-return productsUpdated(_that.products);case _:
+return loadMore();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +165,11 @@ return productsUpdated(_that.products);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetch,TResult? Function()?  loadMore,TResult? Function( List<ProductEntity> products)?  productsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetch,TResult? Function()?  loadMore,}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch();case _LoadMore() when loadMore != null:
-return loadMore();case _ProductsUpdated() when productsUpdated != null:
-return productsUpdated(_that.products);case _:
+return loadMore();case _:
   return null;
 
 }
@@ -246,78 +240,6 @@ String toString() {
 
 
 
-
-/// @nodoc
-
-
-class _ProductsUpdated implements ProductsEvent {
-  const _ProductsUpdated(final  List<ProductEntity> products): _products = products;
-  
-
- final  List<ProductEntity> _products;
- List<ProductEntity> get products {
-  if (_products is EqualUnmodifiableListView) return _products;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_products);
-}
-
-
-/// Create a copy of ProductsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ProductsUpdatedCopyWith<_ProductsUpdated> get copyWith => __$ProductsUpdatedCopyWithImpl<_ProductsUpdated>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductsUpdated&&const DeepCollectionEquality().equals(other._products, _products));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_products));
-
-@override
-String toString() {
-  return 'ProductsEvent.productsUpdated(products: $products)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ProductsUpdatedCopyWith<$Res> implements $ProductsEventCopyWith<$Res> {
-  factory _$ProductsUpdatedCopyWith(_ProductsUpdated value, $Res Function(_ProductsUpdated) _then) = __$ProductsUpdatedCopyWithImpl;
-@useResult
-$Res call({
- List<ProductEntity> products
-});
-
-
-
-
-}
-/// @nodoc
-class __$ProductsUpdatedCopyWithImpl<$Res>
-    implements _$ProductsUpdatedCopyWith<$Res> {
-  __$ProductsUpdatedCopyWithImpl(this._self, this._then);
-
-  final _ProductsUpdated _self;
-  final $Res Function(_ProductsUpdated) _then;
-
-/// Create a copy of ProductsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? products = null,}) {
-  return _then(_ProductsUpdated(
-null == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
-as List<ProductEntity>,
-  ));
-}
-
-
-}
 
 /// @nodoc
 mixin _$ProductsState {

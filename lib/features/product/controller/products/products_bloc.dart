@@ -28,7 +28,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
     _products.clear();
-    _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
+    _paginationDto = _paginationDto.copyWith(page: 1, limit: 10000);
 
     emit(
       ProductsState.loading(
@@ -56,7 +56,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
         return ProductsState.loaded(
           products: List.unmodifiable(_products),
-          hasReachedMax: hasReachedMax,
+          hasReachedMax: true,
         );
       },
     );

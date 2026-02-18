@@ -50,6 +50,7 @@ dependencies:
   forui_hooks: ^0.18.0
   drift: ^2.31.0
   drift_flutter: ^0.2.8
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:

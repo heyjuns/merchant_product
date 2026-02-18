@@ -112,7 +112,6 @@ class ProductRepositoryImpl implements ProductRepository {
       for (final product in pending) {
         try {
           if (product.serverId == null) {
-            // CREATE REMOTE
             final response = await remote.createProduct(
               Params(body: product.toCreateProductDto().toJson()),
             );
@@ -140,9 +139,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
             await local.addOrUpdateProduct(synced);
           }
-        } catch (_) {
-          continue;
-        }
+        } catch (_) {}
       }
 
       return right(unit);

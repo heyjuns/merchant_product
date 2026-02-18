@@ -27,19 +27,17 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
 
   @override
   Stream<List<ProductModel>> watchProducts(Params params) {
-    final productsDto = ProductsDto.fromJson(params.queryParameters!);
-    final offset = (productsDto.page - 1) * productsDto.limit;
+    // final productsDto = ProductsDto.fromJson(params.queryParameters!);
+    // final offset = (productsDto.page - 1) * productsDto.limit;
 
     return (select(db.productsTable)
           ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)])
-          ..limit(productsDto.limit, offset: offset))
+        // ..limit(productsDto.limit, offset: offset)
+        )
         .watch()
         .map((rows) => rows.map(ProductModel.fromDb).toList());
   }
 
-  // ==========================================================
-  // FIND BY SERVER ID
-  // ==========================================================
   @override
   Future<ProductModel?> getProductById(int localId) async {
     final row = await (select(
@@ -49,18 +47,12 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
     return row == null ? null : ProductModel.fromDb(row);
   }
 
-  // ==========================================================
-  // INSERT OR UPDATE
-  // ==========================================================
   @override
   Future<Unit> addOrUpdateProduct(ProductModel model) async {
     await into(db.productsTable).insertOnConflictUpdate(model.toCompanion());
     return unit;
   }
 
-  // ==========================================================
-  // GET PENDING SYNC
-  // ==========================================================
   @override
   Future<List<ProductModel>> getPendingProducts() async {
     final rows = await (select(
