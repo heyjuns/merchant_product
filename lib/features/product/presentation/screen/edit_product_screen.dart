@@ -37,7 +37,8 @@ class EditProductScreen extends HookWidget {
           showFToast(
             context: context,
             title: Text('Product has been edited'),
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
+            alignment: .bottomCenter,
           );
           context.pop(true);
         },

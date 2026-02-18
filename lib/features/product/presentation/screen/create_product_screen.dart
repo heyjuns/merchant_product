@@ -31,7 +31,8 @@ class CreateProductScreen extends HookWidget {
           showFToast(
             context: context,
             title: Text('Product has been created'),
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
+            alignment: .bottomCenter,
           );
           context.pop();
         },
