@@ -12,6 +12,6 @@ class ProductsTable extends Table {
 
   @override
   List<Set<Column>> get uniqueKeys => [
-    {localId},
+    {serverId},
   ];
 }

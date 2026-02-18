@@ -36,7 +36,10 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       ),
     );
 
-    /// 🔥 Start listening to stream
+    unawaited(
+      getProductsUseCase.call(Params(queryParameters: _paginationDto.toJson())),
+    );
+
     await emit.forEach<List<ProductEntity>>(
       streamProductsUsecase.call(
         Params(queryParameters: _paginationDto.toJson()),
@@ -59,11 +62,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           hasReachedMax: true,
         );
       },
-    );
-
-    /// 🔥 Trigger remote fetch AFTER starting stream
-    await getProductsUseCase.call(
-      Params(queryParameters: _paginationDto.toJson()),
     );
   }
 

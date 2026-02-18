@@ -48,6 +48,15 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
   }
 
   @override
+  Future<ProductModel?> getProductByServerId(int id) async {
+    final row = await (select(
+      db.productsTable,
+    )..where((tbl) => tbl.serverId.equals(id))).getSingleOrNull();
+
+    return row == null ? null : ProductModel.fromDb(row);
+  }
+
+  @override
   Future<Unit> addOrUpdateProduct(ProductModel model) async {
     await into(db.productsTable).insertOnConflictUpdate(model.toCompanion());
     return unit;

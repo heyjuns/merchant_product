@@ -188,7 +188,7 @@ class $ProductsTableTable extends ProductsTable
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-    {localId},
+    {serverId},
   ];
   @override
   ProductsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
