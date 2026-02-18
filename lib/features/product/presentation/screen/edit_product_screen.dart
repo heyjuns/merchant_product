@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
+import 'package:merchant_product/features/connectivity/controller/connectivity_check/connectivity_check_bloc.dart';
 
 import '../../controller/controller.dart';
 import '../widget/product_form_widget.dart';
@@ -27,6 +28,12 @@ class EditProductScreen extends HookWidget {
         failed: (error) =>
             showFToast(context: context, title: Text(error.message)),
         loaded: () {
+          final connection = context.read<ConnectivityCheckBloc>().state;
+          connection.whenOrNull(
+            online: () => context.read<SyncProductsBloc>().add(
+              SyncProductsEvent.started(),
+            ),
+          );
           showFToast(
             context: context,
             title: Text('Product has been edited'),
