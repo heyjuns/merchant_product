@@ -54,7 +54,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     await emit.forEach<List<ProductEntity>>(
       streamProductsUsecase.call(Params()),
       onData: (data) {
-        _products.addAll(data);
+        _products
+          ..clear()
+          ..addAll(data);
         final visibleCount = _paginationDto.page * _paginationDto.limit;
 
         final visibleProducts = _products.take(visibleCount).toList();
