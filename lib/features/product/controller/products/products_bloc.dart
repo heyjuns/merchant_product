@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:merchant_product/core/core.dart';
@@ -22,7 +20,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   int get visibleCount => paginationDto.page * paginationDto.limit;
   List<ProductEntity> get visibleProducts =>
       products.take(visibleCount).toList();
-  bool get hasReachedMax => visibleProducts.length >= products.length;
+  bool get hasReachedMax => visibleProducts.length >= totalCount;
+  int totalCount = 0;
 
   ProductsBloc({
     required this.getProductsUseCase,
@@ -34,11 +33,12 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       emit(ProductsState.loading(products: dummies));
 
-      unawaited(
-        getProductsUseCase.call(
-          Params(queryParameters: paginationDto.toJson()),
-        ),
+      final response = await getProductsUseCase.call(
+        Params(queryParameters: paginationDto.toJson()),
       );
+      response.fold((_) {}, (r) {
+        totalCount = r;
+      });
 
       await emit.forEach<List<ProductEntity>>(
         streamProductsUsecase.call(Params()),
@@ -54,7 +54,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         },
       );
     }, transformer: restartable());
-    on<_LoadMore>((event, emit) {
+    on<_LoadMore>((event, emit) async {
       final currentState = state;
 
       if (currentState is! _Loaded || currentState.hasReachedMax) return;
@@ -69,11 +69,12 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       paginationDto = paginationDto.copyWith(page: nextPage);
 
-      unawaited(
-        getProductsUseCase.call(
-          Params(queryParameters: paginationDto.toJson()),
-        ),
+      final response = await getProductsUseCase.call(
+        Params(queryParameters: paginationDto.toJson()),
       );
+      response.fold((_) {}, (r) {
+        totalCount = r;
+      });
     }, transformer: droppable());
   }
 

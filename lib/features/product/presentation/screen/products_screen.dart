@@ -132,8 +132,8 @@ class _Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FTappable(
-      onPress: onTap,
+    return GestureDetector(
+      onTap: onTap,
       child: FCard(
         title: Row(
           mainAxisAlignment: .spaceBetween,
