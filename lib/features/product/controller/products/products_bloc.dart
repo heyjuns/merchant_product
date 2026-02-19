@@ -19,16 +19,27 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   }) : super(const ProductsState.initial()) {
     on<_Fetch>(_onFetch, transformer: restartable());
     on<_LoadMore>(_onLoadMore, transformer: droppable());
+    on<_StreamUpdated>(_onStreamUpdated);
+  }
+  void _onStreamUpdated(_StreamUpdated event, Emitter<ProductsState> emit) {
+    final visibleCount = _paginationDto.page * _paginationDto.limit;
+    final visibleProducts = event.products.take(visibleCount).toList();
+    final hasReachedMax = visibleProducts.length >= event.products.length;
+
+    emit(
+      ProductsState.loaded(
+        products: visibleProducts,
+        hasReachedMax: hasReachedMax,
+      ),
+    );
   }
 
   final List<ProductEntity> _products = [];
   ProductsDto _paginationDto = ProductsDto.init();
 
-  /// ================= FETCH =================
-
   Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
     _products.clear();
-    _paginationDto = _paginationDto.copyWith(page: 1, limit: 10000);
+    _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
 
     emit(
       ProductsState.loading(
@@ -41,39 +52,40 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     );
 
     await emit.forEach<List<ProductEntity>>(
-      streamProductsUsecase.call(
-        Params(queryParameters: _paginationDto.toJson()),
-      ),
+      streamProductsUsecase.call(Params()),
       onData: (data) {
-        _products
-          ..clear()
-          ..addAll(data);
+        _products.addAll(data);
+        final visibleCount = _paginationDto.page * _paginationDto.limit;
 
-        final hasReachedMax = data.length < _paginationDto.limit;
+        final visibleProducts = _products.take(visibleCount).toList();
 
-        if (!hasReachedMax) {
-          _paginationDto = _paginationDto.copyWith(
-            page: _paginationDto.page + 1,
-          );
-        }
+        final hasReachedMax = visibleProducts.length == _products.length;
 
         return ProductsState.loaded(
-          products: List.unmodifiable(_products),
-          hasReachedMax: true,
+          products: visibleProducts,
+          hasReachedMax: hasReachedMax,
         );
       },
     );
   }
 
-  /// ================= LOAD MORE =================
-
-  Future<void> _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) async {
+  void _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) {
     final currentState = state;
 
     if (currentState is! _Loaded || currentState.hasReachedMax) return;
 
-    await getProductsUseCase.call(
-      Params(queryParameters: _paginationDto.toJson()),
+    final nextPage = _paginationDto.page + 1;
+    final nextVisibleCount = nextPage * _paginationDto.limit;
+
+    if (_products.length >= nextVisibleCount) {
+      _paginationDto = _paginationDto.copyWith(page: nextPage);
+
+      add(ProductsEvent.streamUpdated(_products));
+
+      return;
+    }
+    unawaited(
+      getProductsUseCase.call(Params(queryParameters: _paginationDto.toJson())),
     );
   }
 }

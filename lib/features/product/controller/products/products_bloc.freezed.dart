@@ -55,12 +55,13 @@ extension ProductsEventPatterns on ProductsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Fetch value)?  fetch,TResult Function( _LoadMore value)?  loadMore,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Fetch value)?  fetch,TResult Function( _LoadMore value)?  loadMore,TResult Function( _StreamUpdated value)?  streamUpdated,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch(_that);case _LoadMore() when loadMore != null:
-return loadMore(_that);case _:
+return loadMore(_that);case _StreamUpdated() when streamUpdated != null:
+return streamUpdated(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Fetch value)  fetch,required TResult Function( _LoadMore value)  loadMore,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Fetch value)  fetch,required TResult Function( _LoadMore value)  loadMore,required TResult Function( _StreamUpdated value)  streamUpdated,}){
 final _that = this;
 switch (_that) {
 case _Fetch():
 return fetch(_that);case _LoadMore():
-return loadMore(_that);case _:
+return loadMore(_that);case _StreamUpdated():
+return streamUpdated(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Fetch value)?  fetch,TResult? Function( _LoadMore value)?  loadMore,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Fetch value)?  fetch,TResult? Function( _LoadMore value)?  loadMore,TResult? Function( _StreamUpdated value)?  streamUpdated,}){
 final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch(_that);case _LoadMore() when loadMore != null:
-return loadMore(_that);case _:
+return loadMore(_that);case _StreamUpdated() when streamUpdated != null:
+return streamUpdated(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetch,TResult Function()?  loadMore,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetch,TResult Function()?  loadMore,TResult Function( List<ProductEntity> products)?  streamUpdated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch();case _LoadMore() when loadMore != null:
-return loadMore();case _:
+return loadMore();case _StreamUpdated() when streamUpdated != null:
+return streamUpdated(_that.products);case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return loadMore();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetch,required TResult Function()  loadMore,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetch,required TResult Function()  loadMore,required TResult Function( List<ProductEntity> products)  streamUpdated,}) {final _that = this;
 switch (_that) {
 case _Fetch():
 return fetch();case _LoadMore():
-return loadMore();case _:
+return loadMore();case _StreamUpdated():
+return streamUpdated(_that.products);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return loadMore();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetch,TResult? Function()?  loadMore,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetch,TResult? Function()?  loadMore,TResult? Function( List<ProductEntity> products)?  streamUpdated,}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
 return fetch();case _LoadMore() when loadMore != null:
-return loadMore();case _:
+return loadMore();case _StreamUpdated() when streamUpdated != null:
+return streamUpdated(_that.products);case _:
   return null;
 
 }
@@ -240,6 +246,78 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _StreamUpdated implements ProductsEvent {
+  const _StreamUpdated(final  List<ProductEntity> products): _products = products;
+  
+
+ final  List<ProductEntity> _products;
+ List<ProductEntity> get products {
+  if (_products is EqualUnmodifiableListView) return _products;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_products);
+}
+
+
+/// Create a copy of ProductsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StreamUpdatedCopyWith<_StreamUpdated> get copyWith => __$StreamUpdatedCopyWithImpl<_StreamUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StreamUpdated&&const DeepCollectionEquality().equals(other._products, _products));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_products));
+
+@override
+String toString() {
+  return 'ProductsEvent.streamUpdated(products: $products)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StreamUpdatedCopyWith<$Res> implements $ProductsEventCopyWith<$Res> {
+  factory _$StreamUpdatedCopyWith(_StreamUpdated value, $Res Function(_StreamUpdated) _then) = __$StreamUpdatedCopyWithImpl;
+@useResult
+$Res call({
+ List<ProductEntity> products
+});
+
+
+
+
+}
+/// @nodoc
+class __$StreamUpdatedCopyWithImpl<$Res>
+    implements _$StreamUpdatedCopyWith<$Res> {
+  __$StreamUpdatedCopyWithImpl(this._self, this._then);
+
+  final _StreamUpdated _self;
+  final $Res Function(_StreamUpdated) _then;
+
+/// Create a copy of ProductsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? products = null,}) {
+  return _then(_StreamUpdated(
+null == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
+as List<ProductEntity>,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$ProductsState {
