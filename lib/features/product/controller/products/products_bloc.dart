@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:merchant_product/core/core.dart';
@@ -54,7 +56,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         },
       );
     }, transformer: restartable());
-    on<_LoadMore>((event, emit) async {
+    on<_LoadMore>((event, emit) {
       final currentState = state;
 
       if (currentState is! _Loaded || currentState.hasReachedMax) return;
@@ -69,12 +71,11 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       paginationDto = paginationDto.copyWith(page: nextPage);
 
-      final response = await getProductsUseCase.call(
-        Params(queryParameters: paginationDto.toJson()),
+      unawaited(
+        getProductsUseCase.call(
+          Params(queryParameters: paginationDto.toJson()),
+        ),
       );
-      response.fold((_) {}, (r) {
-        totalCount = r;
-      });
     }, transformer: droppable());
   }
 
