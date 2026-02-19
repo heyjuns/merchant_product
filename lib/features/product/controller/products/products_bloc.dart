@@ -13,81 +13,77 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final GetProductsUsecase getProductsUseCase;
   final StreamProductsUsecase streamProductsUsecase;
 
+  final List<ProductEntity> products = [];
+  final List<ProductEntity> dummies = List.generate(
+    10,
+    (_) => ProductEntity.init(),
+  );
+  ProductsDto paginationDto = ProductsDto.init();
+  int get visibleCount => paginationDto.page * paginationDto.limit;
+  List<ProductEntity> get visibleProducts =>
+      products.take(visibleCount).toList();
+  bool get hasReachedMax => visibleProducts.length >= products.length;
+
   ProductsBloc({
     required this.getProductsUseCase,
     required this.streamProductsUsecase,
   }) : super(const ProductsState.initial()) {
-    on<_Fetch>(_onFetch, transformer: restartable());
-    on<_LoadMore>(_onLoadMore, transformer: droppable());
-    on<_StreamUpdated>(_onStreamUpdated);
-  }
-  void _onStreamUpdated(_StreamUpdated event, Emitter<ProductsState> emit) {
-    final visibleCount = _paginationDto.page * _paginationDto.limit;
-    final visibleProducts = event.products.take(visibleCount).toList();
-    final hasReachedMax = visibleProducts.length >= event.products.length;
+    on<_Fetch>((event, emit) async {
+      products.clear();
+      paginationDto = ProductsDto.init();
 
+      emit(ProductsState.loading(products: dummies));
+
+      unawaited(
+        getProductsUseCase.call(
+          Params(queryParameters: paginationDto.toJson()),
+        ),
+      );
+
+      await emit.forEach<List<ProductEntity>>(
+        streamProductsUsecase.call(Params()),
+        onData: (data) {
+          products
+            ..clear()
+            ..addAll(data);
+
+          return ProductsState.loaded(
+            products: visibleProducts,
+            hasReachedMax: hasReachedMax,
+          );
+        },
+      );
+    }, transformer: restartable());
+    on<_LoadMore>((event, emit) {
+      final currentState = state;
+
+      if (currentState is! _Loaded || currentState.hasReachedMax) return;
+
+      final nextPage = paginationDto.page + 1;
+      final nextVisibleCount = nextPage * paginationDto.limit;
+
+      if (products.length >= nextVisibleCount) {
+        paginationDto = paginationDto.copyWith(page: nextPage);
+        emitLoaded(emit);
+        return;
+      }
+
+      paginationDto = paginationDto.copyWith(page: nextPage);
+
+      unawaited(
+        getProductsUseCase.call(
+          Params(queryParameters: paginationDto.toJson()),
+        ),
+      );
+    }, transformer: droppable());
+  }
+
+  void emitLoaded(Emitter<ProductsState> emit) {
     emit(
       ProductsState.loaded(
         products: visibleProducts,
         hasReachedMax: hasReachedMax,
       ),
-    );
-  }
-
-  final List<ProductEntity> _products = [];
-  ProductsDto _paginationDto = ProductsDto.init();
-
-  Future<void> _onFetch(_Fetch event, Emitter<ProductsState> emit) async {
-    _products.clear();
-    _paginationDto = _paginationDto.copyWith(page: 1, limit: 10);
-
-    emit(
-      ProductsState.loading(
-        products: List.generate(4, (_) => ProductEntity.init()),
-      ),
-    );
-
-    unawaited(
-      getProductsUseCase.call(Params(queryParameters: _paginationDto.toJson())),
-    );
-
-    await emit.forEach<List<ProductEntity>>(
-      streamProductsUsecase.call(Params()),
-      onData: (data) {
-        _products
-          ..clear()
-          ..addAll(data);
-        final visibleCount = _paginationDto.page * _paginationDto.limit;
-
-        final visibleProducts = _products.take(visibleCount).toList();
-
-        final hasReachedMax = visibleProducts.length == _products.length;
-
-        return ProductsState.loaded(
-          products: visibleProducts,
-          hasReachedMax: hasReachedMax,
-        );
-      },
-    );
-  }
-
-  void _onLoadMore(_LoadMore event, Emitter<ProductsState> emit) {
-    final currentState = state;
-
-    if (currentState is! _Loaded || currentState.hasReachedMax) return;
-
-    final nextPage = _paginationDto.page + 1;
-    final nextVisibleCount = nextPage * _paginationDto.limit;
-
-    if (_products.length >= nextVisibleCount) {
-      _paginationDto = _paginationDto.copyWith(page: nextPage);
-
-      add(ProductsEvent.streamUpdated(_products));
-
-      return;
-    }
-    unawaited(
-      getProductsUseCase.call(Params(queryParameters: _paginationDto.toJson())),
     );
   }
 }
