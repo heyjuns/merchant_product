@@ -27,19 +27,19 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  BaseResponse<Unit> getProducts(Params params) async {
+  BaseResponse<int> getProducts(Params params) async {
     try {
-      final remoteList = await remote.getProducts(params);
+      final response = await remote.getProducts(params);
 
-      for (final remote in remoteList) {
-        if (remote.serverId == null) continue;
-        final exist = await local.getProductByServerId(remote.serverId!);
+      for (final product in response.products) {
+        if (product.serverId == null) continue;
+        final exist = await local.getProductByServerId(product.serverId!);
 
-        final model = remote.copyWith(localId: exist?.localId, synced: true);
+        final model = product.copyWith(localId: exist?.localId, synced: true);
         await local.addOrUpdateProduct(model);
       }
 
-      return right(unit);
+      return right(response.total);
     } on ErrorException catch (e) {
       return left(e.toFailure());
     }

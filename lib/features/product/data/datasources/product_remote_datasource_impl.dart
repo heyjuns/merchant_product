@@ -40,7 +40,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  Future<List<ProductModel>> getProducts(Params params) async {
+  Future<PaginationProductModel> getProducts(Params params) async {
     try {
       final response = await dio.get(
         '/products/',
@@ -48,9 +48,13 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
         cancelToken: params.cancelToken,
       );
 
-      return List.from(
-        response.data as List,
-      ).map((item) => ProductModel.fromJson(item)).toList();
+      return PaginationProductModel(
+        total:
+            int.tryParse(response.headers.value('x-total-count') ?? '0') ?? 0,
+        products: List.from(
+          response.data as List,
+        ).map((item) => ProductModel.fromJson(item)).toList(),
+      );
     } catch (e) {
       throw RemoteExceptionMapper.map(e);
     }
