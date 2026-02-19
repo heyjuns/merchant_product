@@ -4,7 +4,6 @@ import 'package:merchant_product/core/params.dart';
 import '../../product.dart';
 
 abstract class ProductLocalDatasource {
-  Future<List<ProductModel>> getProducts(Params params);
   Stream<List<ProductModel>> watchProducts(Params params);
   Future<ProductModel?> getProductById(int id);
   Future<ProductModel?> getProductByServerId(int id);

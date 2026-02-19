@@ -64,8 +64,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       if (products.length >= nextVisibleCount) {
         paginationDto = paginationDto.copyWith(page: nextPage);
-        emitLoaded(emit);
-        return;
+        return emitLoaded(emit);
       }
 
       paginationDto = paginationDto.copyWith(page: nextPage);

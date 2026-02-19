@@ -12,28 +12,9 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
   ProductLocalDatasourceImpl(this.db) : super(db);
 
   @override
-  Future<List<ProductModel>> getProducts(Params params) async {
-    final productsDto = ProductsDto.fromJson(params.queryParameters!);
-    final offset = (productsDto.page - 1) * productsDto.limit;
-
-    final rows =
-        await (select(db.productsTable)
-              ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)])
-              ..limit(productsDto.limit, offset: offset))
-            .get();
-
-    return rows.map(ProductModel.fromDb).toList();
-  }
-
-  @override
   Stream<List<ProductModel>> watchProducts(Params params) {
-    // final productsDto = ProductsDto.fromJson(params.queryParameters!);
-    // final offset = (productsDto.page - 1) * productsDto.limit;
-
     return (select(db.productsTable)
-          ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)])
-        // ..limit(productsDto.limit, offset: offset)
-        )
+          ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)]))
         .watch()
         .map((rows) => rows.map(ProductModel.fromDb).toList());
   }
