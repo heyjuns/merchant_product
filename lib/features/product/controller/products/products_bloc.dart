@@ -22,8 +22,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   int get visibleCount => paginationDto.page * paginationDto.limit;
   List<ProductEntity> get visibleProducts =>
       products.take(visibleCount).toList();
-  bool get hasReachedMax => visibleProducts.length >= totalCount;
-  int totalCount = 0;
+  bool get hasReachedMax =>
+      visibleProducts.length >= (totalCount ?? products.length);
+  int? totalCount;
 
   ProductsBloc({
     required this.getProductsUseCase,
@@ -45,6 +46,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       await emit.forEach<List<ProductEntity>>(
         streamProductsUsecase.call(Params()),
         onData: (data) {
+          print('data length ${data.length}');
           products
             ..clear()
             ..addAll(data);
@@ -62,9 +64,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       if (currentState is! _Loaded || currentState.hasReachedMax) return;
 
       final nextPage = paginationDto.page + 1;
-      final nextVisibleCount = nextPage * paginationDto.limit;
-
-      if (products.length >= nextVisibleCount) {
+      if (visibleProducts.length < products.length) {
         paginationDto = paginationDto.copyWith(page: nextPage);
         return emitLoaded(emit);
       }

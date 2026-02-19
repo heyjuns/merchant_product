@@ -14,7 +14,7 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
   @override
   Stream<List<ProductModel>> watchProducts(Params params) {
     return (select(db.productsTable)
-          ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)]))
+          ..orderBy([(t) => OrderingTerm.asc(t.localId)]))
         .watch()
         .map((rows) => rows.map(ProductModel.fromDb).toList());
   }
