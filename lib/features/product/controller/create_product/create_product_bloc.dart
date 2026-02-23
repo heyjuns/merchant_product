@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:merchant_product/core/error/failure.dart';
-import 'package:merchant_product/core/params.dart';
 import 'package:merchant_product/features/product/domain/domain.dart';
 
 part 'create_product_event.dart';
@@ -14,9 +13,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
     : super(CreateProductState.initial()) {
     on<_Fetch>((event, emit) async {
       emit(CreateProductState.loading());
-      final result = await createProductUsecase.call(
-        Params(body: event.dto.toJson()),
-      );
+      final result = await createProductUsecase.call(event.dto);
 
       result.fold(
         (l) => emit(CreateProductState.failed(error: l)),

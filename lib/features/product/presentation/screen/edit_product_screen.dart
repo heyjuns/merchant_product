@@ -53,7 +53,9 @@ class EditProductScreen extends HookWidget {
             loaded: (product) => ProductFormWidget(
               initialData: product,
               onSubmit: (dto) {
-                editProductBloc.add(EditProductEvent.fetch(id: id, dto: dto));
+                editProductBloc.add(
+                  EditProductEvent.fetch(dto: dto.copyWith(id: id)),
+                );
               },
             ),
             orElse: () => SizedBox.shrink(),

@@ -1,13 +1,13 @@
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/core.dart';
-import '../entities/product_entity.dart';
+import '../domain.dart';
 
 abstract class ProductRepository {
-  BaseResponse<int> getProducts(Params params);
-  Stream<List<ProductEntity>> streamProducts(Params params);
-  BaseResponse<ProductEntity> getProduct(Params params);
-  BaseResponse<Unit> createProduct(Params params);
-  BaseResponse<Unit> updateProduct(Params params);
+  BaseResponse<int> getProducts(ProductsDto params);
+  Stream<List<ProductEntity>> streamProducts();
+  BaseResponse<ProductEntity> getProduct(int id);
+  BaseResponse<Unit> createProduct(CreateProductDto params);
+  BaseResponse<Unit> updateProduct(CreateProductDto params);
   BaseResponse<Unit> syncProducts(Unit unit);
 }

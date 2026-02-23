@@ -6,6 +6,7 @@ part 'create_product_dto.g.dart';
 @freezed
 abstract class CreateProductDto with _$CreateProductDto {
   factory CreateProductDto({
+    @JsonKey(includeToJson: false) int? id,
     required String name,
     required int price,
     required String status,

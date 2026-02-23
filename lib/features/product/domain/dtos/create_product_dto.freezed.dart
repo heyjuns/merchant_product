@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateProductDto implements DiagnosticableTreeMixin {
 
- String get name; int get price; String get status; String get description; String get updatedAt;
+@JsonKey(includeToJson: false) int? get id; String get name; int get price; String get status; String get description; String get updatedAt;
 /// Create a copy of CreateProductDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $CreateProductDtoCopyWith<CreateProductDto> get copyWith => _$CreateProductDtoCo
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'CreateProductDto'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('updatedAt', updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateProductDto&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateProductDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,price,status,description,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,price,status,description,updatedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'CreateProductDto(name: $name, price: $price, status: $status, description: $description, updatedAt: $updatedAt)';
+  return 'CreateProductDto(id: $id, name: $name, price: $price, status: $status, description: $description, updatedAt: $updatedAt)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $CreateProductDtoCopyWith<$Res>  {
   factory $CreateProductDtoCopyWith(CreateProductDto value, $Res Function(CreateProductDto) _then) = _$CreateProductDtoCopyWithImpl;
 @useResult
 $Res call({
- String name, int price, String status, String description, String updatedAt
+@JsonKey(includeToJson: false) int? id, String name, int price, String status, String description, String updatedAt
 });
 
 
@@ -71,9 +71,10 @@ class _$CreateProductDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateProductDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? price = null,Object? status = null,Object? description = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? price = null,Object? status = null,Object? description = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int price,  String status,  String description,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  int? id,  String name,  int price,  String status,  String description,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateProductDto() when $default != null:
-return $default(_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.name,_that.price,_that.status,_that.description,_that.upda
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int price,  String status,  String description,  String updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  int? id,  String name,  int price,  String status,  String description,  String updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _CreateProductDto():
-return $default(_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.name,_that.price,_that.status,_that.description,_that.upda
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int price,  String status,  String description,  String updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  int? id,  String name,  int price,  String status,  String description,  String updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateProductDto() when $default != null:
-return $default(_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.price,_that.status,_that.description,_that.updatedAt);case _:
   return null;
 
 }
@@ -219,9 +220,10 @@ return $default(_that.name,_that.price,_that.status,_that.description,_that.upda
 @JsonSerializable()
 
 class _CreateProductDto with DiagnosticableTreeMixin implements CreateProductDto {
-   _CreateProductDto({required this.name, required this.price, required this.status, required this.description, required this.updatedAt});
+   _CreateProductDto({@JsonKey(includeToJson: false) this.id, required this.name, required this.price, required this.status, required this.description, required this.updatedAt});
   factory _CreateProductDto.fromJson(Map<String, dynamic> json) => _$CreateProductDtoFromJson(json);
 
+@override@JsonKey(includeToJson: false) final  int? id;
 @override final  String name;
 @override final  int price;
 @override final  String status;
@@ -242,21 +244,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'CreateProductDto'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('price', price))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('updatedAt', updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateProductDto&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateProductDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,price,status,description,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,price,status,description,updatedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'CreateProductDto(name: $name, price: $price, status: $status, description: $description, updatedAt: $updatedAt)';
+  return 'CreateProductDto(id: $id, name: $name, price: $price, status: $status, description: $description, updatedAt: $updatedAt)';
 }
 
 
@@ -267,7 +269,7 @@ abstract mixin class _$CreateProductDtoCopyWith<$Res> implements $CreateProductD
   factory _$CreateProductDtoCopyWith(_CreateProductDto value, $Res Function(_CreateProductDto) _then) = __$CreateProductDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String name, int price, String status, String description, String updatedAt
+@JsonKey(includeToJson: false) int? id, String name, int price, String status, String description, String updatedAt
 });
 
 
@@ -284,9 +286,10 @@ class __$CreateProductDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateProductDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? price = null,Object? status = null,Object? description = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = null,Object? price = null,Object? status = null,Object? description = null,Object? updatedAt = null,}) {
   return _then(_CreateProductDto(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable

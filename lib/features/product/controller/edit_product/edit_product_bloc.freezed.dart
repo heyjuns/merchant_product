@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EditProductEvent {
 
- int get id; CreateProductDto get dto;
+ CreateProductDto get dto;
 /// Create a copy of EditProductEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $EditProductEventCopyWith<EditProductEvent> get copyWith => _$EditProductEventCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.dto, dto) || other.dto == dto));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductEvent&&(identical(other.dto, dto) || other.dto == dto));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,dto);
+int get hashCode => Object.hash(runtimeType,dto);
 
 @override
 String toString() {
-  return 'EditProductEvent(id: $id, dto: $dto)';
+  return 'EditProductEvent(dto: $dto)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $EditProductEventCopyWith<$Res>  {
   factory $EditProductEventCopyWith(EditProductEvent value, $Res Function(EditProductEvent) _then) = _$EditProductEventCopyWithImpl;
 @useResult
 $Res call({
- int id, CreateProductDto dto
+ CreateProductDto dto
 });
 
 
@@ -62,10 +62,9 @@ class _$EditProductEventCopyWithImpl<$Res>
 
 /// Create a copy of EditProductEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? dto = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? dto = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,dto: null == dto ? _self.dto : dto // ignore: cast_nullable_to_non_nullable
+dto: null == dto ? _self.dto : dto // ignore: cast_nullable_to_non_nullable
 as CreateProductDto,
   ));
 }
@@ -160,10 +159,10 @@ return fetch(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  CreateProductDto dto)?  fetch,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CreateProductDto dto)?  fetch,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
-return fetch(_that.id,_that.dto);case _:
+return fetch(_that.dto);case _:
   return orElse();
 
 }
@@ -181,10 +180,10 @@ return fetch(_that.id,_that.dto);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  CreateProductDto dto)  fetch,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CreateProductDto dto)  fetch,}) {final _that = this;
 switch (_that) {
 case _Fetch():
-return fetch(_that.id,_that.dto);case _:
+return fetch(_that.dto);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +200,10 @@ return fetch(_that.id,_that.dto);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  CreateProductDto dto)?  fetch,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CreateProductDto dto)?  fetch,}) {final _that = this;
 switch (_that) {
 case _Fetch() when fetch != null:
-return fetch(_that.id,_that.dto);case _:
+return fetch(_that.dto);case _:
   return null;
 
 }
@@ -216,10 +215,9 @@ return fetch(_that.id,_that.dto);case _:
 
 
 class _Fetch implements EditProductEvent {
-  const _Fetch({required this.id, required this.dto});
+  const _Fetch({required this.dto});
   
 
-@override final  int id;
 @override final  CreateProductDto dto;
 
 /// Create a copy of EditProductEvent
@@ -232,16 +230,16 @@ _$FetchCopyWith<_Fetch> get copyWith => __$FetchCopyWithImpl<_Fetch>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Fetch&&(identical(other.id, id) || other.id == id)&&(identical(other.dto, dto) || other.dto == dto));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Fetch&&(identical(other.dto, dto) || other.dto == dto));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,dto);
+int get hashCode => Object.hash(runtimeType,dto);
 
 @override
 String toString() {
-  return 'EditProductEvent.fetch(id: $id, dto: $dto)';
+  return 'EditProductEvent.fetch(dto: $dto)';
 }
 
 
@@ -252,7 +250,7 @@ abstract mixin class _$FetchCopyWith<$Res> implements $EditProductEventCopyWith<
   factory _$FetchCopyWith(_Fetch value, $Res Function(_Fetch) _then) = __$FetchCopyWithImpl;
 @override @useResult
 $Res call({
- int id, CreateProductDto dto
+ CreateProductDto dto
 });
 
 
@@ -269,10 +267,9 @@ class __$FetchCopyWithImpl<$Res>
 
 /// Create a copy of EditProductEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? dto = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? dto = null,}) {
   return _then(_Fetch(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,dto: null == dto ? _self.dto : dto // ignore: cast_nullable_to_non_nullable
+dto: null == dto ? _self.dto : dto // ignore: cast_nullable_to_non_nullable
 as CreateProductDto,
   ));
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:merchant_product/core/core.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -36,17 +37,14 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       emit(ProductsState.loading(products: dummies));
 
-      final response = await getProductsUseCase.call(
-        Params(queryParameters: paginationDto.toJson()),
-      );
+      final response = await getProductsUseCase.call(paginationDto);
       response.fold((_) {}, (r) {
         totalCount = r;
       });
 
       await emit.forEach<List<ProductEntity>>(
-        streamProductsUsecase.call(Params()),
+        streamProductsUsecase.call(unit),
         onData: (data) {
-          print('data length ${data.length}');
           products
             ..clear()
             ..addAll(data);
@@ -71,11 +69,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       paginationDto = paginationDto.copyWith(page: nextPage);
 
-      unawaited(
-        getProductsUseCase.call(
-          Params(queryParameters: paginationDto.toJson()),
-        ),
-      );
+      unawaited(getProductsUseCase.call(paginationDto));
     }, transformer: droppable());
   }
 

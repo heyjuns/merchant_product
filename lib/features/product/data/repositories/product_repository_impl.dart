@@ -11,10 +11,9 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this.remote, required this.local});
 
   @override
-  BaseResponse<ProductEntity> getProduct(Params params) async {
+  BaseResponse<ProductEntity> getProduct(int id) async {
     try {
-      final localId = int.parse(params.endPoint!);
-      final model = await local.getProductById(localId);
+      final model = await local.getProductById(id);
 
       if (model == null) {
         return left(CacheFailure(message: 'Product not found'));
@@ -27,9 +26,11 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  BaseResponse<int> getProducts(Params params) async {
+  BaseResponse<int> getProducts(ProductsDto params) async {
     try {
-      final response = await remote.getProducts(params);
+      final response = await remote.getProducts(
+        Params(queryParameters: params.toJson()),
+      );
 
       for (final product in response.products) {
         if (product.serverId == null) continue;
@@ -46,17 +47,15 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Stream<List<ProductEntity>> streamProducts(Params params) {
-    return local
-        .watchProducts(params)
-        .map((models) => models.map((e) => e.toEntity()).toList());
+  Stream<List<ProductEntity>> streamProducts() {
+    return local.watchProducts().map(
+      (models) => models.map((e) => e.toEntity()).toList(),
+    );
   }
 
   @override
-  BaseResponse<Unit> createProduct(Params params) async {
+  BaseResponse<Unit> createProduct(CreateProductDto dto) async {
     try {
-      final dto = CreateProductDto.fromJson(params.body!);
-
       final model = ProductModel(
         localId: null,
         serverId: null,
@@ -77,11 +76,9 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  BaseResponse<Unit> updateProduct(Params params) async {
+  BaseResponse<Unit> updateProduct(CreateProductDto dto) async {
     try {
-      final dto = CreateProductDto.fromJson(params.body!);
-
-      final existing = await local.getProductById(int.parse(params.endPoint!));
+      final existing = await local.getProductById(dto.id!);
 
       if (existing == null) {
         return left(CacheFailure(message: 'Product not found'));

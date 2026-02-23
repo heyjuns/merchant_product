@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:merchant_product/core/params.dart';
 
 import '../../product.dart';
 import '../services/products_database.dart';
@@ -12,7 +11,7 @@ class ProductLocalDatasourceImpl extends DatabaseAccessor<ProductsDatabase>
   ProductLocalDatasourceImpl(this.db) : super(db);
 
   @override
-  Stream<List<ProductModel>> watchProducts(Params params) {
+  Stream<List<ProductModel>> watchProducts() {
     return (select(db.productsTable)
           ..orderBy([(t) => OrderingTerm.asc(t.localId)]))
         .watch()

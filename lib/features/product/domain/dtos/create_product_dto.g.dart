@@ -8,6 +8,7 @@ part of 'create_product_dto.dart';
 
 _CreateProductDto _$CreateProductDtoFromJson(Map<String, dynamic> json) =>
     _CreateProductDto(
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
       price: (json['price'] as num).toInt(),
       status: json['status'] as String,

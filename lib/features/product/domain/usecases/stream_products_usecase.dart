@@ -1,16 +1,16 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:merchant_product/core/usecase.dart';
 
-import '../../../../core/core.dart';
 import '../domain.dart';
 
 class StreamProductsUsecase
-    implements StreamUseCase<Params, List<ProductEntity>> {
+    implements StreamUseCase<Unit, List<ProductEntity>> {
   final ProductRepository repository;
 
   StreamProductsUsecase(this.repository);
 
   @override
-  Stream<List<ProductEntity>> call(Params params) {
-    return repository.streamProducts(params);
+  Stream<List<ProductEntity>> call(Unit params) {
+    return repository.streamProducts();
   }
 }

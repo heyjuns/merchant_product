@@ -14,9 +14,7 @@ class EditProductBloc extends Bloc<EditProductEvent, EditProductState> {
     : super(EditProductState.initial()) {
     on<_Fetch>((event, emit) async {
       emit(EditProductState.loading());
-      final result = await updateProductUsecase.call(
-        Params(endPoint: event.id.toString(), body: event.dto.toJson()),
-      );
+      final result = await updateProductUsecase.call(event.dto);
 
       result.fold(
         (l) => emit(EditProductState.failed(error: l)),
