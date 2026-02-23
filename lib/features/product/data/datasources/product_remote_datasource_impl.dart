@@ -13,11 +13,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   @override
   Future<ProductModel> createProduct(Params params) async {
     try {
-      final response = await dio.post(
-        '/products',
-        data: params.body,
-        cancelToken: params.cancelToken,
-      );
+      final response = await dio.post('/products', data: params.body);
 
       return ProductModel.fromJson(response.data);
     } catch (e) {
@@ -28,10 +24,7 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
   @override
   Future<ProductModel> getProduct(Params params) async {
     try {
-      final response = await dio.get(
-        '/products/${params.endPoint}',
-        cancelToken: params.cancelToken,
-      );
+      final response = await dio.get('/products/${params.endPoint}');
 
       return ProductModel.fromJson(response.data);
     } catch (e) {
@@ -45,7 +38,6 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
       final response = await dio.get(
         '/products/',
         queryParameters: params.queryParameters,
-        cancelToken: params.cancelToken,
       );
 
       return PaginationProductModel(
@@ -66,7 +58,6 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
       final response = await dio.put(
         '/products/${params.endPoint}',
         data: params.body,
-        cancelToken: params.cancelToken,
       );
 
       return ProductModel.fromJson(response.data);
