@@ -9,12 +9,13 @@ part 'product_state.dart';
 part 'product_bloc.freezed.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final GetProductUsecase getProductUsecase;
-  ProductBloc({required this.getProductUsecase})
-    : super(const ProductState.initial()) {
+  final GetProductUsecase _getProductUsecase;
+  ProductBloc({required GetProductUsecase getProductUsecase})
+    : _getProductUsecase = getProductUsecase,
+      super(const ProductState.initial()) {
     on<_Fetch>((event, emit) async {
       emit(ProductState.loading(product: ProductEntity.init()));
-      final result = await getProductUsecase.call(event.id);
+      final result = await _getProductUsecase.call(event.id);
 
       result.fold(
         (l) => emit(ProductState.failed(error: l)),

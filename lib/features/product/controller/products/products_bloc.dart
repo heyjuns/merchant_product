@@ -11,47 +11,49 @@ part 'products_state.dart';
 part 'products_bloc.freezed.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
-  final GetProductsUsecase getProductsUseCase;
-  final StreamProductsUsecase streamProductsUsecase;
+  final GetProductsUsecase _getProductsUseCase;
+  final StreamProductsUsecase _streamProductsUsecase;
 
-  final List<ProductEntity> products = [];
-  final List<ProductEntity> dummies = List.generate(
+  final List<ProductEntity> _products = [];
+  final List<ProductEntity> _dummies = List.generate(
     10,
     (_) => ProductEntity.init(),
   );
-  ProductsDto paginationDto = ProductsDto.init();
-  int get visibleCount => paginationDto.page * paginationDto.limit;
-  List<ProductEntity> get visibleProducts =>
-      products.take(visibleCount).toList();
-  bool get hasReachedMax =>
-      visibleProducts.length >= (totalCount ?? products.length);
-  int? totalCount;
+  ProductsDto _paginationDto = ProductsDto.init();
+  int get _visibleCount => _paginationDto.page * _paginationDto.limit;
+  List<ProductEntity> get _visibleProducts =>
+      _products.take(_visibleCount).toList();
+  bool get _hasReachedMax =>
+      _visibleProducts.length >= (_totalCount ?? _products.length);
+  int? _totalCount;
 
   ProductsBloc({
-    required this.getProductsUseCase,
-    required this.streamProductsUsecase,
-  }) : super(const ProductsState.initial()) {
+    required GetProductsUsecase getProductsUseCase,
+    required StreamProductsUsecase streamProductsUsecase,
+  }) : _streamProductsUsecase = streamProductsUsecase,
+       _getProductsUseCase = getProductsUseCase,
+       super(const ProductsState.initial()) {
     on<_Fetch>((event, emit) async {
-      products.clear();
-      paginationDto = ProductsDto.init();
+      _products.clear();
+      _paginationDto = ProductsDto.init();
 
-      emit(ProductsState.loading(products: dummies));
+      emit(ProductsState.loading(products: _dummies));
 
-      final response = await getProductsUseCase.call(paginationDto);
+      final response = await _getProductsUseCase.call(_paginationDto);
       response.fold((_) {}, (r) {
-        totalCount = r;
+        _totalCount = r;
       });
 
       await emit.forEach<List<ProductEntity>>(
-        streamProductsUsecase.call(unit),
+        _streamProductsUsecase.call(unit),
         onData: (data) {
-          products
+          _products
             ..clear()
             ..addAll(data);
 
           return ProductsState.loaded(
-            products: visibleProducts,
-            hasReachedMax: hasReachedMax,
+            products: _visibleProducts,
+            hasReachedMax: _hasReachedMax,
           );
         },
       );
@@ -61,23 +63,23 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       if (currentState is! _Loaded || currentState.hasReachedMax) return;
 
-      final nextPage = paginationDto.page + 1;
-      if (visibleProducts.length < products.length) {
-        paginationDto = paginationDto.copyWith(page: nextPage);
-        return emitLoaded(emit);
+      final nextPage = _paginationDto.page + 1;
+      if (_visibleProducts.length < _products.length) {
+        _paginationDto = _paginationDto.copyWith(page: nextPage);
+        return _emitLoaded(emit);
       }
 
-      paginationDto = paginationDto.copyWith(page: nextPage);
+      _paginationDto = _paginationDto.copyWith(page: nextPage);
 
-      unawaited(getProductsUseCase.call(paginationDto));
+      unawaited(_getProductsUseCase.call(_paginationDto));
     }, transformer: droppable());
   }
 
-  void emitLoaded(Emitter<ProductsState> emit) {
+  void _emitLoaded(Emitter<ProductsState> emit) {
     emit(
       ProductsState.loaded(
-        products: visibleProducts,
-        hasReachedMax: hasReachedMax,
+        products: _visibleProducts,
+        hasReachedMax: _hasReachedMax,
       ),
     );
   }

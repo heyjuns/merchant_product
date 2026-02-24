@@ -8,12 +8,13 @@ part 'create_product_state.dart';
 part 'create_product_bloc.freezed.dart';
 
 class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
-  CreateProductUsecase createProductUsecase;
-  CreateProductBloc({required this.createProductUsecase})
-    : super(CreateProductState.initial()) {
+  final CreateProductUsecase _createProductUsecase;
+  CreateProductBloc({required CreateProductUsecase createProductUsecase})
+    : _createProductUsecase = createProductUsecase,
+      super(CreateProductState.initial()) {
     on<_Fetch>((event, emit) async {
       emit(CreateProductState.loading());
-      final result = await createProductUsecase.call(event.dto);
+      final result = await _createProductUsecase.call(event.dto);
 
       result.fold(
         (l) => emit(CreateProductState.failed(error: l)),

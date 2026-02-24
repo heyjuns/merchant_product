@@ -9,12 +9,13 @@ part 'sync_products_state.dart';
 part 'sync_products_bloc.freezed.dart';
 
 class SyncProductsBloc extends Bloc<SyncProductsEvent, SyncProductsState> {
-  SyncProductsUsecase syncProductsUsecase;
-  SyncProductsBloc({required this.syncProductsUsecase})
-    : super(SyncProductsState.initial()) {
+  final SyncProductsUsecase _syncProductsUsecase;
+  SyncProductsBloc({required SyncProductsUsecase syncProductsUsecase})
+    : _syncProductsUsecase = syncProductsUsecase,
+      super(SyncProductsState.initial()) {
     on<_Started>((event, emit) async {
       emit(SyncProductsState.loading());
-      final result = await syncProductsUsecase.call(unit);
+      final result = await _syncProductsUsecase.call(unit);
 
       result.fold(
         (l) => emit(SyncProductsState.failed(error: l)),

@@ -9,12 +9,13 @@ part 'edit_product_state.dart';
 part 'edit_product_bloc.freezed.dart';
 
 class EditProductBloc extends Bloc<EditProductEvent, EditProductState> {
-  final UpdateProductUsecase updateProductUsecase;
-  EditProductBloc({required this.updateProductUsecase})
-    : super(EditProductState.initial()) {
+  final UpdateProductUsecase _updateProductUsecase;
+  EditProductBloc({required UpdateProductUsecase updateProductUsecase})
+    : _updateProductUsecase = updateProductUsecase,
+      super(EditProductState.initial()) {
     on<_Fetch>((event, emit) async {
       emit(EditProductState.loading());
-      final result = await updateProductUsecase.call(event.dto);
+      final result = await _updateProductUsecase.call(event.dto);
 
       result.fold(
         (l) => emit(EditProductState.failed(error: l)),

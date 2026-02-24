@@ -7,8 +7,9 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
-
+include:
+    - package:lints/recommended.yaml
+    - package:bloc_lint/recommended.yaml
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
@@ -26,3 +27,14 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+bloc:
+  rules:
+    - avoid_flutter_imports
+    - prefer_file_naming_conventions
+    - avoid_public_bloc_methods
+    - avoid_public_fields
+    - prefer_file_naming_conventions
+analyzer:
+  exclude:
+    - "**.g.dart"
